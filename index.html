@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f8d9c5" />
+    <meta
+      name="description"
+      content="上海 IFE02 F-3 小広甜品铺现场点单页：选择制品数量，自动计算合计并生成点单清单。"
+    />
+    <title>小広甜品铺｜IFE02 F-3 点单</title>
+    <link rel="icon" href="./assets/owl.png" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#products">跳到商品列表</a>
+
+    <header class="shop-header">
+      <div class="awning" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <div class="header-inner">
+        <div class="booth-chip" aria-label="摊位 F-3">
+          <span>IFE02</span>
+          <strong>F-3</strong>
+        </div>
+
+        <div class="brand-copy">
+          <p class="eyebrow">上海 · 现场点单</p>
+          <h1>小広甜品铺</h1>
+          <p class="intro">选好数量，带着点单票来找我们。这里不会产生支付。</p>
+        </div>
+
+        <img class="papa-logo" src="./assets/papa-logo.png" alt="趴在柜台上的筱泽广吉祥物" />
+        <img class="cake-stamp" src="./assets/owl.png" alt="" aria-hidden="true" />
+      </div>
+    </header>
+
+    <nav class="category-nav" aria-label="商品分类">
+      <div class="category-nav-inner">
+        <a href="#new" data-category-link="new">本次新品 <span>3</span></a>
+        <a href="#hiro" data-category-link="hiro">小广制品 <span>7</span></a>
+        <a href="#ktn" data-category-link="ktn">KTN 联动 <span>2</span></a>
+        <a href="#gifts" data-category-link="gifts">赠品 <span>2</span></a>
+      </div>
+    </nav>
+
+    <main id="products" class="page-shell">
+      <section class="notice-card" aria-labelledby="notice-title">
+        <div class="notice-icon" aria-hidden="true">✦</div>
+        <div>
+          <h2 id="notice-title">点单说明</h2>
+          <p>价格单位为元。数量会保存在本机；完成后可复制清单，现场出示给摊主确认。</p>
+        </div>
+      </section>
+
+      <div id="catalog" aria-live="polite"></div>
+
+      <section id="gifts" class="gift-section section-anchor" aria-labelledby="gift-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">A LITTLE GIFT</p>
+            <h2 id="gift-title">随单小甜点</h2>
+          </div>
+          <p>赠品数量有限，以现场为准</p>
+        </div>
+
+        <div class="gift-grid">
+          <article class="gift-card">
+            <img src="./assets/free-card.webp" alt="琴音马卡龙主题 10 厘米方卡" />
+            <div>
+              <span class="gift-label">任意消费赠</span>
+              <h3>KTN 10cm 方卡</h3>
+              <p>下单任意计价制品后，点单票会自动标记。</p>
+            </div>
+          </article>
+          <article class="gift-card">
+            <img src="./assets/free-postcard.webp" alt="KTN 场景珠光明信片" />
+            <div>
+              <span class="gift-label secondary">现场无料</span>
+              <h3>KTN 场景明信片</h3>
+              <p>10 × 15 cm 珠光明信片，欢迎到摊位领取。</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <img src="./assets/owl.png" alt="小広甜品铺猫头鹰吉祥物" />
+        <div>
+          <strong>小広甜品铺 · IFE02 F-3</strong>
+          <p>制品与赠品数量以现场库存为准。</p>
+        </div>
+      </footer>
+    </main>
+
+    <div id="cart-bar" class="cart-bar" data-empty="true">
+      <div class="cart-bar-inner">
+        <div class="cart-total">
+          <span id="cart-count">还没有选择制品</span>
+          <strong><span aria-hidden="true">合计 </span><b id="cart-total">0</b><small> 元</small></strong>
+        </div>
+        <button id="open-cart" class="primary-button" type="button" disabled>
+          查看点单票
+          <span id="cart-badge" hidden>0</span>
+        </button>
+      </div>
+    </div>
+
+    <dialog id="cart-dialog" class="cart-dialog" aria-labelledby="cart-title">
+      <div class="dialog-handle" aria-hidden="true"></div>
+      <div class="dialog-header">
+        <div>
+          <p>IFE02 · F-3</p>
+          <h2 id="cart-title">我的点单票</h2>
+        </div>
+        <button id="close-cart" class="icon-button" type="button" aria-label="关闭点单票">×</button>
+      </div>
+
+      <div id="cart-items" class="cart-items"></div>
+
+      <div id="cart-gift" class="cart-gift" hidden>
+        <span aria-hidden="true">✦</span>
+        <div>
+          <strong>已获得：KTN 10cm 方卡</strong>
+          <p>任意消费赠，最终以现场库存为准。</p>
+        </div>
+      </div>
+
+      <div class="receipt-total">
+        <span>共 <b id="dialog-count">0</b> 件</span>
+        <strong>合计 <b id="dialog-total">0</b><small> 元</small></strong>
+      </div>
+
+      <p class="no-payment-note">本页面仅生成点单清单，不收集信息，也不进行支付。</p>
+
+      <div class="dialog-actions">
+        <button id="clear-cart" class="text-button" type="button">清空</button>
+        <button id="copy-order" class="primary-button wide" type="button">复制点单清单</button>
+      </div>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  </body>
+</html>
