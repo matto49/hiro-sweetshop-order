@@ -203,8 +203,7 @@ export const products = [
   },
   {
     id: "ride-stand",
-    category: "hiro",
-    family: "ride-stand",
+    category: "new",
     character: "筱泽广",
     name: "摇摇车立牌 · 筱泽广",
     spec: "约 75 × 59 mm",
@@ -215,8 +214,7 @@ export const products = [
   },
   {
     id: "whisper-stand",
-    category: "hiro",
-    family: "whisper-stand",
+    category: "new",
     character: "仓本千奈 × 筱泽广",
     name: "悄悄话立牌 · 仓本千奈 × 筱泽广",
     spec: "约 75 × 59 mm · 双人款",
@@ -256,8 +254,6 @@ const categories = [
 
 const productFamilies = [
   { id: "spring-stand", title: "摇摇乐立牌", note: "65 × 46 mm · 可粘贴" },
-  { id: "ride-stand", title: "摇摇车立牌", note: "约 75 × 59 mm" },
-  { id: "whisper-stand", title: "悄悄话立牌", note: "约 75 × 59 mm · 双人款" },
   { id: "shikishi", title: "触感膜色纸", note: "流沙银边 · 14 × 14 cm" },
   { id: "pvc-card", title: "PVC 透卡", note: "86 × 54 mm · 彩白透卡" },
   { id: "badge", title: "双闪吧唧", note: "58 × 58 mm" },
