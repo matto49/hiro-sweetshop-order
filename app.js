@@ -21,7 +21,7 @@ export const products = [
     category: "new",
     name: "筱泽广眼罩",
     spec: "226 × 121 mm · 附蓝色收纳袋",
-    price: 25,
+    price: 20,
     image: "./assets/eye-mask.webp",
     alt: "筱泽广困倦眼神造型眼罩",
     badge: "新品",
@@ -31,7 +31,7 @@ export const products = [
     category: "new",
     name: "兔兔小广大立牌",
     spec: "约 108 × 152 mm",
-    price: 25,
+    price: 30,
     image: "./assets/rabbit-stand.webp",
     alt: "抱着趴趴广的兔耳少女亚克力立牌",
     badge: "新品",
@@ -211,6 +211,7 @@ export const products = [
     price: 12,
     image: "./assets/ride-stand.webp",
     alt: "筱泽广现代舞造型摇摇车立牌",
+    badge: "新品",
   },
   {
     id: "whisper-stand",
@@ -222,43 +223,45 @@ export const products = [
     price: 15,
     image: "./assets/whisper-stand.webp",
     alt: "仓本千奈与筱泽广坐在一起的悄悄话立牌",
+    badge: "新品",
   },
   {
     id: "ktn-shikishi",
-    category: "ktn",
+    category: "hiro",
+    family: "shikishi",
+    character: "藤田琴音",
     name: "琴音马卡龙中色纸",
     spec: "14 × 14 cm · 细闪",
     price: 15,
     image: "./assets/ktn-shikishi.webp",
     alt: "马卡龙主题藤田琴音细闪色纸",
-    badge: "联动",
   },
   {
     id: "ktn-badge",
-    category: "ktn",
+    category: "hiro",
+    family: "badge",
+    character: "藤田琴音",
     name: "琴音马卡龙徽章",
     spec: "亮膜徽章",
     price: 8,
     image: "./assets/ktn-badge.webp",
     alt: "马卡龙主题藤田琴音亮膜徽章",
-    badge: "联动",
   },
 ];
 
 const categories = [
   { id: "new", kicker: "TODAY'S SPECIAL", title: "本次新品", note: "本次摊宣的新面孔" },
   { id: "hiro", kicker: "HIRO SELECTION", title: "小广制品", note: "同一品类可按角色分别点单" },
-  { id: "ktn", kicker: "GUEST SHELF", title: "KTN 联动", note: "長山香奈老师的马卡龙小甜品" },
 ];
 
 const productFamilies = [
+  { id: "spring-stand", title: "摇摇乐立牌", note: "65 × 46 mm · 可粘贴" },
+  { id: "ride-stand", title: "摇摇车立牌", note: "约 75 × 59 mm" },
+  { id: "whisper-stand", title: "悄悄话立牌", note: "约 75 × 59 mm · 双人款" },
   { id: "shikishi", title: "触感膜色纸", note: "流沙银边 · 14 × 14 cm" },
   { id: "pvc-card", title: "PVC 透卡", note: "86 × 54 mm · 彩白透卡" },
   { id: "badge", title: "双闪吧唧", note: "58 × 58 mm" },
   { id: "window-stand", title: "QQ 人彩窗立牌", note: "75 × 59 mm · CNC" },
-  { id: "spring-stand", title: "摇摇乐立牌", note: "65 × 46 mm · 可粘贴" },
-  { id: "ride-stand", title: "摇摇车立牌", note: "约 75 × 59 mm" },
-  { id: "whisper-stand", title: "悄悄话立牌", note: "约 75 × 59 mm · 双人款" },
 ];
 
 const storageKey = "hiro-sweetshop-cart-v1";
