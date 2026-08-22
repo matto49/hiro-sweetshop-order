@@ -66,12 +66,12 @@ test("different character variants stay as separate order lines", () => {
 
 test("bag gift qualification includes exactly 20 yuan", () => {
   assert.deepEqual(calculateGiftEligibility(19), {
-    ktnCard: true,
+    ktnCardSelfPickup: true,
     bag: false,
     bagRemaining: 1,
   });
   assert.deepEqual(calculateGiftEligibility(20), {
-    ktnCard: true,
+    ktnCardSelfPickup: true,
     bag: true,
     bagRemaining: 0,
   });
@@ -79,4 +79,12 @@ test("bag gift qualification includes exactly 20 yuan", () => {
   assert.equal(summary.gifts.bag, true);
   assert.match(formatOrderText(summary), /小広甜品铺袋子无料/);
   assert.match(formatOrderText(summary), /已获得/);
+});
+
+test("KTN card is self-pickup instead of an automatic order gift", () => {
+  const summary = calculateCart(products, {});
+  assert.equal(summary.gifts.ktnCardSelfPickup, true);
+  const text = formatOrderText(calculateCart(products, { book: 1 }));
+  assert.match(text, /KTN 10cm 方卡（可自取/);
+  assert.doesNotMatch(text, /KTN 10cm 方卡（任意消费赠/);
 });

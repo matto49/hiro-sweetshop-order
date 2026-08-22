@@ -43,7 +43,7 @@ export function calculateCart(products, cart) {
 export function calculateGiftEligibility(total) {
   const normalizedTotal = Number.isFinite(total) ? Math.max(0, total) : 0;
   return {
-    ktnCard: normalizedTotal > 0,
+    ktnCardSelfPickup: true,
     bag: normalizedTotal >= BAG_GIFT_THRESHOLD,
     bagRemaining: Math.max(0, BAG_GIFT_THRESHOLD - normalizedTotal),
   };
@@ -67,7 +67,7 @@ export function formatOrderText(summary) {
     lines.push(`${index + 1}. ${item.name} × ${item.quantity}  ${item.subtotal}元`);
   });
   lines.push("", `共 ${summary.count} 件｜合计 ${summary.total} 元`);
-  lines.push("赠品：KTN 10cm 方卡（任意消费赠，数量以现场为准）");
+  lines.push("现场无料：KTN 10cm 方卡（可自取，数量以现场为准）");
   lines.push(
     summary.gifts?.bag
       ? "赠品：小広甜品铺袋子无料（满 20 元赠，已获得）"

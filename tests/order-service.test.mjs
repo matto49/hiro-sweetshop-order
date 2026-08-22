@@ -18,6 +18,7 @@ test("server calculates price and gift eligibility from product ids", () => {
   assert.equal(record.total, 24);
   assert.equal(record.count, 3);
   assert.equal(record.gifts.bag, true);
+  assert.equal(record.gifts.ktnCardSelfPickup, true);
   assert.equal(record.gifts.bagRemaining, 0);
   assert.match(record.orderId, /^HRO-20260822-[A-F0-9]{8}$/);
 });
@@ -30,6 +31,7 @@ test("server records client gift claim but keeps its own decision authoritative"
   });
   assert.equal(record.total, 8);
   assert.equal(record.gifts.bag, false);
+  assert.equal(record.gifts.ktnCardSelfPickup, true);
   assert.equal(record.gifts.bagRemaining, 12);
   assert.equal(record.clientGiftEligibility.bag, true);
   assert.equal(record.giftEligibilityMatched, false);

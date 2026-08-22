@@ -241,6 +241,11 @@
   background: #e4f6ee;
 }
 
+.checkout-gift[data-qualified="pickup"] {
+  color: #257c99;
+  background: var(--blue);
+}
+
 .checkout-gift strong,
 .checkout-gift p {
   margin: 0;
