@@ -74,8 +74,8 @@ a:focus-visible {
 .shop-header {
   position: relative;
   overflow: hidden;
-  min-height: 420px;
-  padding-top: 126px;
+  min-height: 360px;
+  padding-top: 104px;
   background: var(--paper);
   border-bottom: 1px solid rgba(71, 59, 58, 0.08);
 }
@@ -98,7 +98,7 @@ a:focus-visible {
   inset: 0 0 auto;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  height: 116px;
+  height: 94px;
   filter: drop-shadow(0 8px 7px rgba(79, 57, 52, 0.08));
 }
 
@@ -116,8 +116,8 @@ a:focus-visible {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -22px;
-  height: 45px;
+  bottom: -18px;
+  height: 37px;
   background: inherit;
   border-radius: 0 0 50% 50%;
 }
@@ -129,9 +129,9 @@ a:focus-visible {
   grid-template-columns: minmax(0, 1fr) minmax(230px, 0.55fr);
   align-items: end;
   width: min(1180px, calc(100% - 40px));
-  min-height: 265px;
+  min-height: 245px;
   margin: 0 auto;
-  padding: 42px 54px 0;
+  padding: 28px 54px 0;
   background: var(--cream);
   border: 1px solid rgba(71, 59, 58, 0.07);
   border-radius: 36px 36px 0 0;
@@ -140,7 +140,7 @@ a:focus-visible {
 .brand-copy {
   position: relative;
   z-index: 2;
-  padding-bottom: 54px;
+  padding-bottom: 38px;
 }
 
 .eyebrow,
@@ -177,7 +177,7 @@ a:focus-visible {
   z-index: 1;
   align-self: end;
   justify-self: center;
-  width: min(100%, 360px);
+  width: min(100%, 320px);
   height: auto;
   filter: drop-shadow(0 12px 12px rgba(107, 78, 70, 0.12));
 }
@@ -196,7 +196,7 @@ a:focus-visible {
 .booth-chip {
   position: absolute;
   z-index: 5;
-  top: -66px;
+  top: -56px;
   right: 32px;
   display: grid;
   place-items: center;
@@ -1154,7 +1154,7 @@ a:focus-visible {
 
 @media (max-width: 860px) {
   .shop-header {
-    min-height: 390px;
+    min-height: 350px;
   }
 
   .header-inner {
