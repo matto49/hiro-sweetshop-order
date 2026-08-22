@@ -74,8 +74,8 @@ a:focus-visible {
 .shop-header {
   position: relative;
   overflow: hidden;
-  min-height: 360px;
-  padding-top: 104px;
+  min-height: 325px;
+  padding-top: 88px;
   background: var(--paper);
   border-bottom: 1px solid rgba(71, 59, 58, 0.08);
 }
@@ -129,9 +129,9 @@ a:focus-visible {
   grid-template-columns: minmax(0, 1fr) minmax(230px, 0.55fr);
   align-items: end;
   width: min(1180px, calc(100% - 40px));
-  min-height: 245px;
+  min-height: 237px;
   margin: 0 auto;
-  padding: 28px 54px 0;
+  padding: 22px 54px 0;
   background: var(--cream);
   border: 1px solid rgba(71, 59, 58, 0.07);
   border-radius: 36px 36px 0 0;
@@ -140,7 +140,7 @@ a:focus-visible {
 .brand-copy {
   position: relative;
   z-index: 2;
-  padding-bottom: 38px;
+  padding-bottom: 28px;
 }
 
 .eyebrow,
@@ -166,10 +166,10 @@ a:focus-visible {
 
 .intro {
   max-width: 520px;
-  margin: 20px 0 0;
+  margin: 14px 0 0;
   color: var(--muted);
   font-size: 0.98rem;
-  line-height: 1.75;
+  line-height: 1.6;
 }
 
 .papa-logo {
@@ -281,44 +281,6 @@ a:focus-visible {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
   padding: 32px 0 150px;
-}
-
-.notice-card {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  margin-bottom: 54px;
-  padding: 20px 24px;
-  background: var(--blue);
-  border: 1px solid rgba(49, 150, 186, 0.18);
-  border-radius: 20px;
-}
-
-.notice-card h2,
-.notice-card p {
-  margin: 0;
-}
-
-.notice-card h2 {
-  font-size: 1rem;
-}
-
-.notice-card p {
-  margin-top: 4px;
-  color: #55747b;
-  font-size: 0.86rem;
-  line-height: 1.6;
-}
-
-.notice-icon {
-  display: grid;
-  flex: 0 0 auto;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  color: white;
-  background: var(--blue-strong);
-  border-radius: 50%;
 }
 
 .section-anchor {
@@ -1192,7 +1154,7 @@ a:focus-visible {
 
 @media (max-width: 860px) {
   .shop-header {
-    min-height: 350px;
+    min-height: 320px;
   }
 
   .header-inner {
@@ -1215,8 +1177,8 @@ a:focus-visible {
 
 @media (max-width: 620px) {
   .shop-header {
-    min-height: 310px;
-    padding-top: 72px;
+    min-height: 280px;
+    padding-top: 64px;
   }
 
   .awning {
@@ -1231,14 +1193,14 @@ a:focus-visible {
   .header-inner {
     grid-template-columns: minmax(0, 1fr);
     width: calc(100% - 20px);
-    min-height: 238px;
-    padding: 18px 16px 0;
+    min-height: 216px;
+    padding: 14px 16px 0;
     border-radius: 22px 22px 0 0;
   }
 
   .brand-copy {
     align-self: start;
-    padding: 28px 0 20px;
+    padding: 20px 0 14px;
   }
 
   .brand-copy h1 {
@@ -1248,17 +1210,17 @@ a:focus-visible {
   }
 
   .intro {
-    max-width: 205px;
-    margin-top: 10px;
+    max-width: 220px;
+    margin-top: 8px;
     font-size: 0.78rem;
-    line-height: 1.5;
+    line-height: 1.45;
   }
 
   .papa-logo {
     position: absolute;
     right: 8px;
     bottom: 0;
-    width: 120px;
+    width: 110px;
     max-width: none;
     margin: 0;
   }
@@ -1290,12 +1252,6 @@ a:focus-visible {
 
   .page-shell {
     padding-top: 22px;
-  }
-
-  .notice-card {
-    align-items: flex-start;
-    margin-bottom: 42px;
-    padding: 16px;
   }
 
   .section-heading {
