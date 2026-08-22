@@ -226,7 +226,7 @@ export const products = [
   {
     id: "ktn-shikishi",
     category: "hiro",
-    family: "shikishi",
+    family: "ktn",
     character: "藤田琴音",
     name: "琴音马卡龙中色纸",
     spec: "14 × 14 cm · 细闪",
@@ -237,7 +237,7 @@ export const products = [
   {
     id: "ktn-badge",
     category: "hiro",
-    family: "badge",
+    family: "ktn",
     character: "藤田琴音",
     name: "琴音马卡龙徽章",
     spec: "亮膜徽章",
@@ -254,10 +254,11 @@ const categories = [
 
 const productFamilies = [
   { id: "spring-stand", title: "摇摇乐立牌", note: "65 × 46 mm · 可粘贴" },
+  { id: "window-stand", title: "QQ 人彩窗立牌", note: "75 × 59 mm · CNC" },
   { id: "shikishi", title: "触感膜色纸", note: "流沙银边 · 14 × 14 cm" },
   { id: "pvc-card", title: "PVC 透卡", note: "86 × 54 mm · 彩白透卡" },
   { id: "badge", title: "双闪吧唧", note: "58 × 58 mm" },
-  { id: "window-stand", title: "QQ 人彩窗立牌", note: "75 × 59 mm · CNC" },
+  { id: "ktn", title: "KTN 联动", note: "中色纸 · 徽章" },
 ];
 
 const storageKey = "hiro-sweetshop-cart-v1";
