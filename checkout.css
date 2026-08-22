@@ -593,12 +593,18 @@
   }
 
   .payment-methods {
-    gap: 8px;
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .payment-card {
-    padding: 8px;
+    padding: 12px;
     border-radius: 16px;
+  }
+
+  .payment-card img {
+    width: min(100%, 300px);
+    margin-inline: auto;
   }
 
   .payment-card-head {
