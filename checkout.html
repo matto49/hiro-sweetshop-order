@@ -6,13 +6,13 @@
     <meta name="theme-color" content="#fffaf4" />
     <meta
       name="description"
-      content="小広甜品铺独立结账页：核对制品、选择收款方式，由服务端重新计算账单并生成订单号。"
+      content="小広甜品铺独立结账页：核对制品，由服务端重新计算账单并生成现场核对订单号。"
     />
     <title>结账｜小広甜品铺</title>
     <link rel="icon" href="./assets/owl.png" />
     <link rel="stylesheet" href="./styles.css?v=20260822-3" />
-    <link rel="stylesheet" href="./checkout.css?v=20260822-1" />
-    <script type="module" src="./checkout.js"></script>
+    <link rel="stylesheet" href="./checkout.css?v=20260823-1" />
+    <script type="module" src="./checkout.js?v=20260823-1"></script>
   </head>
   <body class="checkout-page">
     <header class="checkout-header">
@@ -62,55 +62,20 @@
         </div>
       </section>
 
-      <aside class="payment-panel" aria-labelledby="payment-title">
-        <div class="payment-heading">
-          <span class="payment-number">02</span>
+      <aside class="submit-panel" aria-labelledby="submit-title">
+        <div class="submit-heading">
+          <span class="submit-number">02</span>
           <div>
-            <p class="section-kicker">SCAN & SUBMIT</p>
-            <h2 id="payment-title">扫码后提交订单</h2>
+            <p class="section-kicker">REVIEW & SUBMIT</p>
+            <h2 id="submit-title">提交现场订单</h2>
           </div>
         </div>
 
-        <p class="payment-intro">
-          选择收款方式并扫码。付款金额请以本页合计为准；提交只生成订单记录，到账仍以摊主收款记录为准。
+        <p class="submit-intro">
+          核对制品与数量后直接提交。服务端会重新计算金额和袋子无料资格，并生成现场核对订单号；本页不处理付款。
         </p>
 
         <form id="order-form">
-          <fieldset class="payment-methods">
-            <legend>选择收款方式</legend>
-            <label class="payment-card" data-payment-card="alipay">
-              <input type="radio" name="paymentMethod" value="alipay" required />
-              <span class="payment-card-head">
-                <b class="alipay-dot" aria-hidden="true"></b>
-                <strong>支付宝</strong>
-                <span>点选</span>
-              </span>
-              <img
-                src="./assets/payment-code-placeholder.svg"
-                data-payment-src="./assets/alipay-qr.png"
-                alt="支付宝收款码"
-              />
-            </label>
-
-            <label class="payment-card" data-payment-card="wechat">
-              <input type="radio" name="paymentMethod" value="wechat" required />
-              <span class="payment-card-head">
-                <b class="wechat-dot" aria-hidden="true"></b>
-                <strong>微信支付</strong>
-                <span>点选</span>
-              </span>
-              <img
-                src="./assets/payment-code-placeholder.svg"
-                data-payment-src="./assets/wechat-pay-qr.png"
-                alt="微信收款码"
-              />
-            </label>
-          </fieldset>
-
-          <div id="payment-code-notice" class="payment-code-notice" role="note" hidden>
-            当前为收款码占位图；放入真实图片后无需改代码即可上线。
-          </div>
-
           <button id="submit-order" class="submit-order" type="submit" disabled>
             <span>提交订单</span>
             <small>生成现场核对编号</small>
@@ -130,7 +95,7 @@
 
     <footer class="checkout-footer">
       <img src="./assets/owl.png" alt="" />
-      <p>不收集姓名、手机号或支付账号。订单金额由后端根据商品 ID 与数量重新计算。</p>
+      <p>不收集姓名、手机号等个人信息。订单金额由后端根据商品 ID 与数量重新计算。</p>
     </footer>
   </body>
 </html>

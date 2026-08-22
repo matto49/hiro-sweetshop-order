@@ -3,7 +3,6 @@ import { randomBytes } from "node:crypto";
 import { calculateCart, clampQuantity } from "../cart.mjs";
 import { products } from "../catalog.mjs";
 
-const paymentMethods = new Set(["alipay", "wechat"]);
 const requestIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const productIds = new Set(products.map((product) => product.id));
 
@@ -60,10 +59,6 @@ export function createOrderRecord(payload, now = new Date()) {
   if (typeof payload.requestId !== "string" || !requestIdPattern.test(payload.requestId)) {
     throw new OrderInputError("订单请求编号格式不正确。");
   }
-  if (!paymentMethods.has(payload.paymentMethod)) {
-    throw new OrderInputError("请选择支付宝或微信支付。");
-  }
-
   const cart = normalizeItems(payload.items);
   const summary = calculateCart(products, cart);
   const clientGiftEligibility = normalizeClientGiftEligibility(payload.clientGiftEligibility);
@@ -72,7 +67,6 @@ export function createOrderRecord(payload, now = new Date()) {
     orderId: createOrderId(now),
     requestId: payload.requestId,
     createdAt: now.toISOString(),
-    paymentMethod: payload.paymentMethod,
     status: "submitted",
     count: summary.count,
     total: summary.total,
@@ -96,7 +90,6 @@ export function publicOrder(record, idempotent = false) {
   return {
     orderId: record.orderId,
     createdAt: record.createdAt,
-    paymentMethod: record.paymentMethod,
     status: record.status,
     count: record.count,
     total: record.total,

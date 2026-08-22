@@ -89,7 +89,7 @@
 }
 
 .receipt-panel,
-.payment-panel {
+.submit-panel {
   background: rgba(255, 254, 251, 0.88);
   border: 1px solid var(--line);
   box-shadow: 0 20px 60px rgba(84, 57, 52, 0.08);
@@ -102,7 +102,7 @@
 }
 
 .checkout-title-row,
-.payment-heading,
+.submit-heading,
 .checkout-total {
   display: flex;
   align-items: center;
@@ -111,7 +111,7 @@
 }
 
 .checkout-title-row h1,
-.payment-heading h2 {
+.submit-heading h2 {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 600;
@@ -282,22 +282,22 @@
   color: var(--muted);
 }
 
-.payment-panel {
+.submit-panel {
   position: sticky;
   top: 24px;
   padding: 28px;
   border-radius: 30px;
 }
 
-.payment-heading {
+.submit-heading {
   justify-content: flex-start;
 }
 
-.payment-heading h2 {
+.submit-heading h2 {
   font-size: 2rem;
 }
 
-.payment-number {
+.submit-number {
   display: grid;
   place-items: center;
   width: 50px;
@@ -309,104 +309,11 @@
   font-size: 1.35rem;
 }
 
-.payment-intro {
+.submit-intro {
   margin: 18px 0 22px;
   color: var(--muted);
   font-size: 0.82rem;
   line-height: 1.75;
-}
-
-.payment-methods {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.payment-methods legend {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-}
-
-.payment-card {
-  position: relative;
-  display: block;
-  min-width: 0;
-  padding: 12px;
-  background: var(--paper);
-  border: 2px solid transparent;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: 160ms ease;
-}
-
-.payment-card:has(input:checked) {
-  background: white;
-  border-color: var(--blue-strong);
-  box-shadow: 0 8px 26px rgba(49, 143, 174, 0.14);
-}
-
-.payment-card input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.payment-card-head {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 10px;
-}
-
-.payment-card-head > b {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.alipay-dot { background: #1677ff; }
-.wechat-dot { background: #07c160; }
-
-.payment-card-head strong {
-  font-size: 0.82rem;
-}
-
-.payment-card-head span {
-  color: var(--muted);
-  font-size: 0.65rem;
-}
-
-.payment-card:has(input:checked) .payment-card-head span {
-  color: var(--blue-strong);
-  font-weight: 800;
-}
-
-.payment-card img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: contain;
-  background: white;
-  border-radius: 12px;
-}
-
-.payment-code-notice {
-  margin-top: 12px;
-  padding: 10px 12px;
-  color: #8a6541;
-  background: #fff1d9;
-  border: 1px solid #efdbb8;
-  border-radius: 12px;
-  font-size: 0.72rem;
-  line-height: 1.55;
 }
 
 .submit-order {
@@ -522,7 +429,7 @@
     grid-template-columns: 1fr;
   }
 
-  .payment-panel {
+  .submit-panel {
     position: static;
   }
 }
@@ -553,7 +460,7 @@
   }
 
   .receipt-panel,
-  .payment-panel {
+  .submit-panel {
     padding: 18px;
     border-radius: 22px;
   }
@@ -590,29 +497,6 @@
   .checkout-total > span {
     max-width: 130px;
     line-height: 1.5;
-  }
-
-  .payment-methods {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .payment-card {
-    padding: 12px;
-    border-radius: 16px;
-  }
-
-  .payment-card img {
-    width: min(100%, 300px);
-    margin-inline: auto;
-  }
-
-  .payment-card-head {
-    grid-template-columns: auto 1fr;
-  }
-
-  .payment-card-head > span {
-    display: none;
   }
 
   .submit-order {

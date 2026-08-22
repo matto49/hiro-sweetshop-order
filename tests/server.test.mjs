@@ -19,7 +19,6 @@ test("order API persists one idempotent server-priced order", async (t) => {
   const { port } = server.address();
   const payload = {
     requestId: "f93bbc2c-1745-4af5-8a59-e57d9eed3dca",
-    paymentMethod: "wechat",
     items: [{ id: "pvc-hiro", quantity: 1 }, { id: "badge-hiro", quantity: 1 }],
     clientGiftEligibility: { bag: true, bagRemaining: 0 },
   };

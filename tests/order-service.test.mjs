@@ -5,7 +5,6 @@ import { OrderInputError, createOrderRecord, publicOrder } from "../server/order
 
 const basePayload = {
   requestId: "4c7c2f7a-e847-4a7e-908a-1cc431589a56",
-  paymentMethod: "alipay",
   items: [{ id: "ai-book", quantity: 1 }],
   clientGiftEligibility: { bag: true, bagRemaining: 0 },
 };
@@ -47,7 +46,7 @@ test("server includes the 20 yuan threshold", () => {
   assert.equal(record.gifts.bag, true);
 });
 
-test("server rejects unknown products, duplicates, bad quantities and payment methods", () => {
+test("server rejects unknown products, duplicates and bad quantities", () => {
   assert.throws(
     () => createOrderRecord({ ...basePayload, items: [{ id: "unknown", quantity: 1 }] }),
     OrderInputError,
@@ -60,5 +59,10 @@ test("server rejects unknown products, duplicates, bad quantities and payment me
     () => createOrderRecord({ ...basePayload, items: [{ id: "ai-book", quantity: 1.5 }] }),
     /1 到 99/,
   );
-  assert.throws(() => createOrderRecord({ ...basePayload, paymentMethod: "cash" }), /支付宝或微信/);
+});
+
+test("removed payment fields are ignored for stale clients", () => {
+  const record = createOrderRecord({ ...basePayload, paymentMethod: "alipay" });
+  assert.equal("paymentMethod" in record, false);
+  assert.equal("paymentMethod" in publicOrder(record), false);
 });

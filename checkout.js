@@ -14,7 +14,6 @@ const orderForm = document.querySelector("#order-form");
 const submitButton = document.querySelector("#submit-order");
 const orderResult = document.querySelector("#order-result");
 const submitError = document.querySelector("#submit-error");
-const paymentCodeNotice = document.querySelector("#payment-code-notice");
 
 function loadCart() {
   try {
@@ -92,25 +91,8 @@ checkoutItems.addEventListener("click", (event) => {
   render();
 });
 
-async function loadPaymentCodes() {
-  let missingCode = false;
-  await Promise.all(
-    [...document.querySelectorAll(".payment-card img")].map(async (image) => {
-      try {
-        const response = await fetch(image.dataset.paymentSrc, { method: "HEAD", cache: "no-store" });
-        if (!response.ok) throw new Error("missing payment code");
-        image.src = image.dataset.paymentSrc;
-      } catch {
-        missingCode = true;
-      }
-    }),
-  );
-  paymentCodeNotice.hidden = !missingCode;
-}
-
-function cartFingerprint(summary, paymentMethod) {
+function cartFingerprint(summary) {
   return JSON.stringify({
-    paymentMethod,
     items: summary.items.map((item) => [item.id, item.quantity]),
   });
 }
@@ -137,13 +119,7 @@ orderForm.addEventListener("submit", async (event) => {
   const summary = calculateCart(products, cart);
   if (!summary.items.length || submitting) return;
 
-  const paymentMethod = new FormData(orderForm).get("paymentMethod");
-  if (!paymentMethod) {
-    showError("请先选择支付宝或微信支付。");
-    return;
-  }
-
-  const fingerprint = cartFingerprint(summary, paymentMethod);
+  const fingerprint = cartFingerprint(summary);
   const requestId = getRequestId(fingerprint);
   submitting = true;
   submitError.hidden = true;
@@ -157,7 +133,6 @@ orderForm.addEventListener("submit", async (event) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         requestId,
-        paymentMethod,
         items: summary.items.map((item) => ({ id: item.id, quantity: item.quantity })),
         clientGiftEligibility: {
           bag: summary.gifts.bag,
@@ -187,4 +162,3 @@ orderForm.addEventListener("submit", async (event) => {
 });
 
 render();
-loadPaymentCodes();
