@@ -37,67 +37,191 @@ export const products = [
     badge: "新品",
   },
   {
+    id: "shikishi-kotone",
+    category: "hiro",
+    family: "shikishi",
+    character: "藤田琴音",
+    name: "触感膜色纸 · 藤田琴音",
+    spec: "流沙银边 · 14 × 14 cm",
+    price: 15,
+    image: "./assets/shikishi-kotone.webp",
+    alt: "藤田琴音款触感膜色纸",
+  },
+  {
+    id: "shikishi-hiro",
+    category: "hiro",
+    family: "shikishi",
+    character: "筱泽广",
+    name: "触感膜色纸 · 筱泽广",
+    spec: "流沙银边 · 14 × 14 cm",
+    price: 15,
+    image: "./assets/shikishi-hiro.webp",
+    alt: "筱泽广款触感膜色纸",
+  },
+  {
+    id: "pvc-kotone",
+    category: "hiro",
+    family: "pvc-card",
+    character: "藤田琴音",
+    name: "PVC 透卡 · 藤田琴音",
+    spec: "86 × 54 mm · 彩白透卡",
+    price: 8,
+    image: "./assets/pvc-kotone.webp",
+    alt: "藤田琴音款 PVC 透明卡片",
+  },
+  {
+    id: "pvc-hiro",
+    category: "hiro",
+    family: "pvc-card",
+    character: "筱泽广",
+    name: "PVC 透卡 · 筱泽广",
+    spec: "86 × 54 mm · 彩白透卡",
+    price: 8,
+    image: "./assets/pvc-hiro.webp",
+    alt: "筱泽广款 PVC 透明卡片",
+  },
+  {
+    id: "badge-kotone",
+    category: "hiro",
+    family: "badge",
+    character: "藤田琴音",
+    name: "双闪吧唧 · 藤田琴音",
+    spec: "58 × 58 mm",
+    price: 12,
+    image: "./assets/badge-kotone.webp",
+    alt: "藤田琴音款圆形双闪徽章",
+  },
+  {
+    id: "badge-hiro",
+    category: "hiro",
+    family: "badge",
+    character: "筱泽广",
+    name: "双闪吧唧 · 筱泽广",
+    spec: "58 × 58 mm",
+    price: 12,
+    image: "./assets/badge-hiro.webp",
+    alt: "筱泽广款圆形双闪徽章",
+  },
+  {
+    id: "window-hiro",
+    category: "hiro",
+    family: "window-stand",
+    character: "筱泽广",
+    name: "QQ 人彩窗立牌 · 筱泽广",
+    spec: "75 × 59 mm · CNC",
+    price: 18,
+    image: "./assets/window-hiro.webp",
+    alt: "筱泽广款 QQ 人彩窗亚克力立牌",
+  },
+  {
+    id: "window-china",
+    category: "hiro",
+    family: "window-stand",
+    character: "仓本千奈",
+    name: "QQ 人彩窗立牌 · 仓本千奈",
+    spec: "75 × 59 mm · CNC",
+    price: 18,
+    image: "./assets/window-china.webp",
+    alt: "仓本千奈款 QQ 人彩窗亚克力立牌",
+  },
+  {
+    id: "window-kotone",
+    category: "hiro",
+    family: "window-stand",
+    character: "藤田琴音",
+    name: "QQ 人彩窗立牌 · 藤田琴音",
+    spec: "75 × 59 mm · CNC",
+    price: 18,
+    image: "./assets/window-kotone.webp",
+    alt: "藤田琴音款 QQ 人彩窗亚克力立牌",
+  },
+  {
+    id: "window-misuzu",
+    category: "hiro",
+    family: "window-stand",
+    character: "秦谷美铃",
+    name: "QQ 人彩窗立牌 · 秦谷美铃",
+    spec: "75 × 59 mm · CNC",
+    price: 18,
+    image: "./assets/window-misuzu.webp",
+    alt: "秦谷美铃款 QQ 人彩窗亚克力立牌",
+  },
+  {
+    id: "window-lilja",
+    category: "hiro",
+    family: "window-stand",
+    character: "葛城莉莉娅",
+    name: "QQ 人彩窗立牌 · 葛城莉莉娅",
+    spec: "75 × 59 mm · CNC",
+    price: 18,
+    image: "./assets/window-lilja.webp",
+    alt: "葛城莉莉娅款 QQ 人彩窗亚克力立牌",
+  },
+  {
+    id: "spring-misuzu",
+    category: "hiro",
+    family: "spring-stand",
+    character: "秦谷美铃",
+    name: "摇摇乐立牌 · 秦谷美铃",
+    spec: "65 × 46 mm · 可粘贴",
+    price: 15,
+    image: "./assets/spring-misuzu.webp",
+    alt: "秦谷美铃款带弹簧底座的摇摇乐立牌",
+  },
+  {
+    id: "spring-hiro",
+    category: "hiro",
+    family: "spring-stand",
+    character: "筱泽广",
+    name: "摇摇乐立牌 · 筱泽广",
+    spec: "65 × 46 mm · 可粘贴",
+    price: 15,
+    image: "./assets/spring-hiro.webp",
+    alt: "筱泽广款带弹簧底座的摇摇乐立牌",
+  },
+  {
+    id: "spring-kotone",
+    category: "hiro",
+    family: "spring-stand",
+    character: "藤田琴音",
+    name: "摇摇乐立牌 · 藤田琴音",
+    spec: "65 × 46 mm · 可粘贴",
+    price: 15,
+    image: "./assets/spring-kotone.webp",
+    alt: "藤田琴音款带弹簧底座的摇摇乐立牌",
+  },
+  {
+    id: "spring-lilja",
+    category: "hiro",
+    family: "spring-stand",
+    character: "葛城莉莉娅",
+    name: "摇摇乐立牌 · 葛城莉莉娅",
+    spec: "65 × 46 mm · 可粘贴",
+    price: 15,
+    image: "./assets/spring-lilja.webp",
+    alt: "葛城莉莉娅款带弹簧底座的摇摇乐立牌",
+  },
+  {
     id: "ride-stand",
     category: "hiro",
-    name: "摇摇车立牌",
+    family: "ride-stand",
+    character: "筱泽广",
+    name: "摇摇车立牌 · 筱泽广",
     spec: "约 75 × 59 mm",
     price: 12,
     image: "./assets/ride-stand.webp",
-    alt: "现代舞造型摇摇车立牌",
+    alt: "筱泽广现代舞造型摇摇车立牌",
   },
   {
     id: "whisper-stand",
     category: "hiro",
-    name: "悄悄话立牌",
-    spec: "约 75 × 59 mm",
+    family: "whisper-stand",
+    character: "仓本千奈 × 筱泽广",
+    name: "悄悄话立牌 · 仓本千奈 × 筱泽广",
+    spec: "约 75 × 59 mm · 双人款",
     price: 15,
     image: "./assets/whisper-stand.webp",
-    alt: "两位角色坐在一起的悄悄话立牌",
-  },
-  {
-    id: "hiro-shikishi",
-    category: "hiro",
-    name: "触感膜色纸",
-    spec: "流沙银边 · 14 × 14 cm",
-    price: 15,
-    image: "./assets/hiro-shikishi.webp",
-    alt: "两款筱泽广与藤田琴音色纸",
-  },
-  {
-    id: "pvc-card",
-    category: "hiro",
-    name: "PVC 透卡",
-    spec: "86 × 54 mm · 彩白透卡",
-    price: 8,
-    image: "./assets/pvc-card.webp",
-    alt: "两款角色 PVC 透明卡片",
-  },
-  {
-    id: "badge",
-    category: "hiro",
-    name: "双闪吧唧",
-    spec: "58 × 58 mm",
-    price: 12,
-    image: "./assets/badge.webp",
-    alt: "两款圆形双闪徽章",
-  },
-  {
-    id: "qq-window-stand",
-    category: "hiro",
-    name: "QQ 人彩窗立牌",
-    spec: "75 × 59 mm · CNC",
-    price: 18,
-    image: "./assets/qq-window-stand.webp",
-    alt: "五款 QQ 人彩窗亚克力立牌",
-  },
-  {
-    id: "spring-stand",
-    category: "hiro",
-    name: "摇摇乐立牌",
-    spec: "65 × 46 mm · 可粘贴",
-    price: 15,
-    image: "./assets/spring-stand.webp",
-    alt: "四款带弹簧底座的摇摇乐立牌",
+    alt: "仓本千奈与筱泽广坐在一起的悄悄话立牌",
   },
   {
     id: "ktn-shikishi",
@@ -123,8 +247,18 @@ export const products = [
 
 const categories = [
   { id: "new", kicker: "TODAY'S SPECIAL", title: "本次新品", note: "本次摊宣的新面孔" },
-  { id: "hiro", kicker: "HIRO SELECTION", title: "小广制品", note: "纸品、透卡与会摇晃的 QQ 人" },
+  { id: "hiro", kicker: "HIRO SELECTION", title: "小广制品", note: "同一品类可按角色分别点单" },
   { id: "ktn", kicker: "GUEST SHELF", title: "KTN 联动", note: "長山香奈老师的马卡龙小甜品" },
+];
+
+const productFamilies = [
+  { id: "shikishi", title: "触感膜色纸", note: "流沙银边 · 14 × 14 cm" },
+  { id: "pvc-card", title: "PVC 透卡", note: "86 × 54 mm · 彩白透卡" },
+  { id: "badge", title: "双闪吧唧", note: "58 × 58 mm" },
+  { id: "window-stand", title: "QQ 人彩窗立牌", note: "75 × 59 mm · CNC" },
+  { id: "spring-stand", title: "摇摇乐立牌", note: "65 × 46 mm · 可粘贴" },
+  { id: "ride-stand", title: "摇摇车立牌", note: "约 75 × 59 mm" },
+  { id: "whisper-stand", title: "悄悄话立牌", note: "约 75 × 59 mm · 双人款" },
 ];
 
 const storageKey = "hiro-sweetshop-cart-v1";
@@ -165,7 +299,7 @@ function createProductCard(product) {
     <div class="product-copy">
       <div class="product-title-row">
         <div>
-          <h3>${product.name}</h3>
+          <h3>${product.character || product.name}</h3>
           <p>${product.spec}</p>
         </div>
         <strong class="product-price" aria-label="${product.price} 元">${product.price}</strong>
@@ -198,12 +332,39 @@ function renderCatalog() {
       <div class="product-grid"></div>
     `;
     const grid = section.querySelector(".product-grid");
-    products.filter((product) => product.category === category.id).forEach((product) => {
-      grid.append(createProductCard(product));
-    });
+    const categoryProducts = products.filter((product) => product.category === category.id);
+    if (category.id === "hiro") {
+      grid.remove();
+      productFamilies.forEach((family) => {
+        const familyProducts = categoryProducts.filter((product) => product.family === family.id);
+        if (!familyProducts.length) return;
+        const familySection = document.createElement("section");
+        familySection.className = "product-family";
+        familySection.setAttribute("aria-labelledby", `family-${family.id}`);
+        familySection.innerHTML = `
+          <div class="family-heading">
+            <div>
+              <h3 id="family-${family.id}">${family.title}</h3>
+              <p>${family.note}</p>
+            </div>
+            <span>${familyProducts.length === 1 ? "1 款" : `${familyProducts.length} 款角色`}</span>
+          </div>
+          <div class="product-grid variant-grid"></div>
+        `;
+        const familyGrid = familySection.querySelector(".variant-grid");
+        familyProducts.forEach((product) => familyGrid.append(createProductCard(product)));
+        section.append(familySection);
+      });
+    } else {
+      categoryProducts.forEach((product) => grid.append(createProductCard(product)));
+    }
     fragment.append(section);
   });
   catalog.replaceChildren(fragment);
+  categories.forEach((category) => {
+    const count = document.querySelector(`[data-category-count="${category.id}"]`);
+    if (count) count.textContent = products.filter((product) => product.category === category.id).length;
+  });
 }
 
 function renderCartItems(summary) {
