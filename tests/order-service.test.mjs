@@ -66,3 +66,10 @@ test("removed payment fields are ignored for stale clients", () => {
   assert.equal("paymentMethod" in record, false);
   assert.equal("paymentMethod" in publicOrder(record), false);
 });
+
+test("server rejects products currently marked sold out", () => {
+  assert.throws(
+    () => createOrderRecord(basePayload, new Date(), new Set(["ai-book"])),
+    (error) => error instanceof OrderInputError && error.statusCode === 409 && /小广 AI 小课堂/.test(error.message),
+  );
+});

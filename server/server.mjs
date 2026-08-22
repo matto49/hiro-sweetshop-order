@@ -1,9 +1,11 @@
+import { timingSafeEqual } from "node:crypto";
 import { createServer } from "node:http";
 import { appendFile, mkdir, readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
 import { OrderInputError, createOrderRecord, publicOrder } from "./order-service.mjs";
+import { StockInputError, createStockStore } from "./stock-service.mjs";
 
 const defaultAllowedOrigins = [
   "https://matto49.github.io",
@@ -27,11 +29,20 @@ function corsHeaders(origin, allowedOrigins) {
   if (!origin || !allowedOrigins.has(origin)) return {};
   return {
     "Access-Control-Allow-Origin": origin,
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "GET, POST, PATCH, OPTIONS",
+    "Access-Control-Allow-Headers": "Authorization, Content-Type",
     "Access-Control-Max-Age": "600",
     Vary: "Origin",
   };
+}
+
+function hasAdminAccess(request, adminToken) {
+  if (!adminToken) return false;
+  const authorization = request.headers.authorization || "";
+  const suppliedToken = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
+  const expected = Buffer.from(adminToken);
+  const supplied = Buffer.from(suppliedToken);
+  return expected.length === supplied.length && timingSafeEqual(expected, supplied);
 }
 
 async function readJsonBody(request, maxBytes = 32 * 1024) {
@@ -92,7 +103,10 @@ function createRateLimiter({ limit = 30, windowMs = 60_000 } = {}) {
 }
 
 export async function createOrderServer(options = {}) {
-  const dataFile = options.dataFile || resolve(process.env.ORDER_DATA_DIR || "./data", "orders.jsonl");
+  const dataDirectory = process.env.ORDER_DATA_DIR || "./data";
+  const dataFile = options.dataFile || resolve(dataDirectory, "orders.jsonl");
+  const stockFile = options.stockFile || resolve(options.dataFile ? dirname(options.dataFile) : dataDirectory, "stock.json");
+  const adminToken = options.adminToken ?? process.env.ADMIN_TOKEN ?? "";
   const allowedOrigins = new Set(
     options.allowedOrigins ||
       (process.env.ALLOWED_ORIGINS || defaultAllowedOrigins.join(","))
@@ -101,6 +115,7 @@ export async function createOrderServer(options = {}) {
         .filter(Boolean),
   );
   const store = await createOrderStore(dataFile);
+  const stockStore = await createStockStore(stockFile);
   const allowRequest = createRateLimiter(options.rateLimit);
 
   return createServer(async (request, response) => {
@@ -113,7 +128,10 @@ export async function createOrderServer(options = {}) {
       return;
     }
 
-    if (request.method === "OPTIONS" && url.pathname === "/api/orders") {
+    if (
+      request.method === "OPTIONS" &&
+      ["/api/orders", "/api/stock", "/api/admin/stock"].includes(url.pathname)
+    ) {
       response.writeHead(204, headers);
       response.end();
       return;
@@ -124,8 +142,8 @@ export async function createOrderServer(options = {}) {
       return;
     }
 
-    if (request.method !== "POST" || url.pathname !== "/api/orders") {
-      json(response, 404, { message: "接口不存在。" }, headers);
+    if (request.method === "GET" && url.pathname === "/api/stock") {
+      json(response, 200, stockStore.get(), headers);
       return;
     }
 
@@ -133,6 +151,38 @@ export async function createOrderServer(options = {}) {
     const clientIp = (Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(",")[0]) || request.socket.remoteAddress || "unknown";
     if (!allowRequest(clientIp.trim())) {
       json(response, 429, { message: "提交过于频繁，请稍后再试。" }, headers);
+      return;
+    }
+
+    if (request.method === "PATCH" && url.pathname === "/api/admin/stock") {
+      if (!adminToken) {
+        json(response, 503, { message: "库存后台尚未配置管理口令。" }, headers);
+        return;
+      }
+      if (!hasAdminAccess(request, adminToken)) {
+        json(response, 401, { message: "管理口令不正确。" }, headers);
+        return;
+      }
+      if (!request.headers["content-type"]?.toLowerCase().startsWith("application/json")) {
+        json(response, 415, { message: "请使用 JSON 更新库存。" }, headers);
+        return;
+      }
+      try {
+        const payload = await readJsonBody(request);
+        json(response, 200, await stockStore.update(payload), headers);
+      } catch (error) {
+        if (error instanceof OrderInputError || error instanceof StockInputError) {
+          json(response, error.statusCode, { message: error.message }, headers);
+          return;
+        }
+        console.error(error);
+        json(response, 500, { message: "库存更新失败。" }, headers);
+      }
+      return;
+    }
+
+    if (request.method !== "POST" || url.pathname !== "/api/orders") {
+      json(response, 404, { message: "接口不存在。" }, headers);
       return;
     }
 
@@ -149,11 +199,11 @@ export async function createOrderServer(options = {}) {
         return;
       }
 
-      const record = createOrderRecord(payload);
+      const record = createOrderRecord(payload, new Date(), stockStore.soldOutIds());
       await store.save(record);
       json(response, 201, publicOrder(record), headers);
     } catch (error) {
-      if (error instanceof OrderInputError) {
+      if (error instanceof OrderInputError || error instanceof StockInputError) {
         json(response, error.statusCode, { message: error.message }, headers);
         return;
       }

@@ -5,6 +5,7 @@ import { products } from "../catalog.mjs";
 
 const requestIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const productIds = new Set(products.map((product) => product.id));
+const productById = new Map(products.map((product) => [product.id, product]));
 
 export class OrderInputError extends Error {
   constructor(message, statusCode = 400) {
@@ -52,7 +53,7 @@ function createOrderId(now) {
   return `HRO-${date}-${randomBytes(4).toString("hex").toUpperCase()}`;
 }
 
-export function createOrderRecord(payload, now = new Date()) {
+export function createOrderRecord(payload, now = new Date(), soldOutIds = new Set()) {
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
     throw new OrderInputError("请求格式不正确。");
   }
@@ -61,6 +62,11 @@ export function createOrderRecord(payload, now = new Date()) {
   }
   const cart = normalizeItems(payload.items);
   const summary = calculateCart(products, cart);
+  const unavailableItems = summary.items.filter((item) => soldOutIds.has(item.id));
+  if (unavailableItems.length) {
+    const names = unavailableItems.map((item) => productById.get(item.id)?.name || item.id).join("、");
+    throw new OrderInputError(`以下商品已售尽：${names}`, 409);
+  }
   const clientGiftEligibility = normalizeClientGiftEligibility(payload.clientGiftEligibility);
 
   return {

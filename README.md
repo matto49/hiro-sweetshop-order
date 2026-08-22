@@ -23,10 +23,15 @@ ORDER_DATA_DIR=./tmp/data ALLOWED_ORIGINS=http://127.0.0.1:4173 node server/serv
 ```
 
 - `GET /health`：健康检查。
+- `GET /api/stock`：公开读取当前售尽商品 ID。
+- `PATCH /api/admin/stock`：使用 Bearer 管理口令切换商品售尽状态。
 - `POST /api/orders`：只接收商品 ID、数量与客户端赠品判断；金额和赠品资格由服务端重新计算。
 - 订单以 JSONL 追加写入 `ORDER_DATA_DIR/orders.jsonl`，不保存姓名、手机号、付款信息或 IP。
+- 库存状态保存在 `ORDER_DATA_DIR/stock.json`；订单提交时服务端会拒绝已售尽商品。
 
 生产环境使用 `https://api.matto.top/hiro-order`，systemd 与 Nginx 配置模板位于 `server/`。
+
+库存后台位于 `/admin.html`。管理口令通过服务端 `ADMIN_TOKEN` 环境变量配置，只保存在后台页面的当前标签页会话中。
 
 ## 在线版本
 

@@ -12,6 +12,7 @@ Environment=HOST=127.0.0.1
 Environment=PORT=19120
 Environment=ORDER_DATA_DIR=/var/lib/hiro-order-api
 Environment=ALLOWED_ORIGINS=https://matto49.github.io,https://order.matto.top
+EnvironmentFile=-/etc/hiro-order-api/admin.env
 ExecStart=/usr/local/bin/node /opt/hiro-order-api/server/server.mjs
 Restart=on-failure
 RestartSec=3

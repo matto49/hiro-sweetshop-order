@@ -3,6 +3,7 @@ import {
   sanitizeCart,
   updateQuantity,
 } from "./cart.mjs";
+import { fetchStock, removeSoldOutFromCart } from "./stock.mjs";
 
 export const products = [
   {
@@ -263,6 +264,7 @@ const productFamilies = [
 const storageKey = "hiro-sweetshop-cart-v1";
 const catalog = document.querySelector("#catalog");
 const openCartButton = document.querySelector("#open-cart");
+const stockNotice = document.querySelector("#stock-notice");
 
 function loadCart() {
   try {
@@ -273,6 +275,9 @@ function loadCart() {
 }
 
 let cart = loadCart();
+let soldOutIds = new Set();
+let stockReady = false;
+let stockNoticeTimer;
 
 function saveCart() {
   localStorage.setItem(storageKey, JSON.stringify(cart));
@@ -286,6 +291,7 @@ function createProductCard(product) {
     <div class="product-image-wrap">
       <img src="${product.image}" alt="${product.alt}" loading="lazy" />
       ${product.badge ? `<span class="product-badge">${product.badge}</span>` : ""}
+      <span class="sold-out-badge" hidden>售尽</span>
     </div>
     <div class="product-copy">
       <div class="product-title-row">
@@ -362,11 +368,17 @@ function render() {
   const summary = calculateCart(products, cart);
   document.querySelectorAll(".product-card").forEach((card) => {
     const quantity = cart[card.dataset.productId] || 0;
+    const soldOut = soldOutIds.has(card.dataset.productId);
     const output = card.querySelector("output");
     const decreaseButton = card.querySelector('[data-action="decrease"]');
+    const increaseButton = card.querySelector('[data-action="increase"]');
+    const soldOutBadge = card.querySelector(".sold-out-badge");
     output.value = quantity;
     output.textContent = quantity;
     decreaseButton.disabled = quantity === 0;
+    increaseButton.disabled = !stockReady || soldOut;
+    soldOutBadge.hidden = !soldOut;
+    card.dataset.soldOut = soldOut ? "true" : "false";
     card.dataset.selected = quantity > 0 ? "true" : "false";
   });
 
@@ -383,13 +395,43 @@ function render() {
     ? "已获得袋子无料 ✓"
     : `还差 ${summary.gifts.bagRemaining} 元获得`;
   document.querySelector("#cart-bar").dataset.empty = summary.count === 0 ? "true" : "false";
-  openCartButton.disabled = summary.count === 0;
+  openCartButton.disabled = summary.count === 0 || !stockReady;
   saveCart();
 }
 
 function changeQuantity(productId, delta) {
+  if (!stockReady || (delta > 0 && soldOutIds.has(productId))) return;
   cart = updateQuantity(cart, productId, delta);
   render();
+}
+
+function showStockNotice(text, persistent = false) {
+  window.clearTimeout(stockNoticeTimer);
+  stockNotice.textContent = text;
+  stockNotice.dataset.visible = "true";
+  if (!persistent) {
+    stockNoticeTimer = window.setTimeout(() => {
+      stockNotice.dataset.visible = "false";
+    }, 3200);
+  }
+}
+
+async function syncStock() {
+  try {
+    const state = await fetchStock();
+    soldOutIds = new Set(state.soldOut);
+    const nextCart = removeSoldOutFromCart(cart, soldOutIds);
+    const removedCount = Object.keys(cart).length - Object.keys(nextCart).length;
+    cart = nextCart;
+    stockReady = true;
+    render();
+    if (removedCount > 0) showStockNotice("售尽商品已从点单中移除。");
+    else stockNotice.dataset.visible = "false";
+  } catch {
+    stockReady = false;
+    render();
+    showStockNotice("库存状态暂时无法同步，请刷新重试。", true);
+  }
 }
 
 catalog.addEventListener("click", (event) => {
@@ -426,3 +468,4 @@ observedSections.forEach((section) => observer.observe(section));
 
 // The catalog must exist before the first render updates its steppers.
 render();
+syncStock();

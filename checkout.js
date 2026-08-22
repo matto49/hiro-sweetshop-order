@@ -1,5 +1,6 @@
 import { calculateCart, sanitizeCart, updateQuantity } from "./cart.mjs";
 import { products } from "./catalog.mjs";
+import { fetchStock, removeSoldOutFromCart } from "./stock.mjs";
 
 const API_BASE = "https://api.matto.top/hiro-order";
 const storageKey = "hiro-sweetshop-cart-v1";
@@ -25,6 +26,8 @@ function loadCart() {
 
 let cart = loadCart();
 let submitting = false;
+let soldOutIds = new Set();
+let stockReady = false;
 
 function saveCart() {
   localStorage.setItem(storageKey, JSON.stringify(cart));
@@ -44,8 +47,9 @@ function renderItems(summary) {
   }
 
   checkoutItems.innerHTML = summary.items
-    .map(
-      (item) => `
+    .map((item) => {
+      const soldOut = soldOutIds.has(item.id);
+      return `
         <article class="checkout-line" data-product-id="${item.id}">
           <img src="${item.image}" alt="${item.alt || ""}" />
           <div>
@@ -57,12 +61,12 @@ function renderItems(summary) {
             <div class="mini-stepper" aria-label="${item.name}数量">
               <button type="button" data-action="decrease" aria-label="减少一件${item.name}">−</button>
               <output>${item.quantity}</output>
-              <button type="button" data-action="increase" aria-label="增加一件${item.name}">＋</button>
+              <button type="button" data-action="increase" aria-label="增加一件${item.name}" ${!stockReady || soldOut ? "disabled" : ""}>＋</button>
             </div>
           </div>
         </article>
-      `,
-    )
+      `;
+    })
     .join("");
 }
 
@@ -76,7 +80,7 @@ function render() {
   checkoutBagStatus.textContent = summary.gifts.bag
     ? "已获得袋子无料 ✓"
     : `还差 ${summary.gifts.bagRemaining} 元获得`;
-  submitButton.disabled = summary.count === 0 || submitting;
+  submitButton.disabled = summary.count === 0 || submitting || !stockReady;
   saveCart();
 }
 
@@ -84,6 +88,7 @@ checkoutItems.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-action]");
   if (!button) return;
   const line = button.closest("[data-product-id]");
+  if (button.dataset.action === "increase" && (!stockReady || soldOutIds.has(line.dataset.productId))) return;
   cart = updateQuantity(cart, line.dataset.productId, button.dataset.action === "increase" ? 1 : -1);
   orderResult.hidden = true;
   submitError.hidden = true;
@@ -112,6 +117,25 @@ function getRequestId(fingerprint) {
 function showError(message) {
   submitError.textContent = message;
   submitError.hidden = false;
+}
+
+async function syncStock() {
+  try {
+    const state = await fetchStock();
+    soldOutIds = new Set(state.soldOut);
+    const removedProducts = products.filter((product) => soldOutIds.has(product.id) && cart[product.id]);
+    cart = removeSoldOutFromCart(cart, soldOutIds);
+    stockReady = true;
+    sessionStorage.removeItem(requestKey);
+    render();
+    if (removedProducts.length) {
+      showError(`已移除售尽商品：${removedProducts.map((product) => product.name).join("、")}`);
+    }
+  } catch {
+    stockReady = false;
+    render();
+    showError("库存状态暂时无法同步，请刷新重试。");
+  }
 }
 
 orderForm.addEventListener("submit", async (event) => {
@@ -157,8 +181,9 @@ orderForm.addEventListener("submit", async (event) => {
     submitButton.querySelector("span").textContent = "重新提交";
   } finally {
     submitting = false;
-    submitButton.disabled = calculateCart(products, cart).count === 0;
+    submitButton.disabled = calculateCart(products, cart).count === 0 || !stockReady;
   }
 });
 
 render();
+syncStock();

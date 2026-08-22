@@ -9,7 +9,13 @@ import { createOrderServer } from "../server/server.mjs";
 test("order API persists one idempotent server-priced order", async (t) => {
   const tempDirectory = await mkdtemp(join(tmpdir(), "hiro-order-api-"));
   const dataFile = join(tempDirectory, "orders.jsonl");
-  const server = await createOrderServer({ dataFile, allowedOrigins: ["https://matto49.github.io"] });
+  const stockFile = join(tempDirectory, "stock.json");
+  const server = await createOrderServer({
+    dataFile,
+    stockFile,
+    adminToken: "test-admin-token",
+    allowedOrigins: ["https://matto49.github.io"],
+  });
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   t.after(async () => {
     await new Promise((resolve) => server.close(resolve));
@@ -28,6 +34,46 @@ test("order API persists one idempotent server-priced order", async (t) => {
       headers: { Origin: "https://matto49.github.io", "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
+
+  const stockBefore = await fetch(`http://127.0.0.1:${port}/api/stock`, {
+    headers: { Origin: "https://matto49.github.io" },
+  });
+  assert.equal(stockBefore.status, 200);
+  assert.deepEqual((await stockBefore.json()).soldOut, []);
+
+  const unauthorized = await fetch(`http://127.0.0.1:${port}/api/admin/stock`, {
+    method: "PATCH",
+    headers: { Origin: "https://matto49.github.io", "Content-Type": "application/json" },
+    body: JSON.stringify({ productId: "pvc-hiro", soldOut: true }),
+  });
+  assert.equal(unauthorized.status, 401);
+
+  const markSoldOut = await fetch(`http://127.0.0.1:${port}/api/admin/stock`, {
+    method: "PATCH",
+    headers: {
+      Origin: "https://matto49.github.io",
+      Authorization: "Bearer test-admin-token",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ productId: "pvc-hiro", soldOut: true }),
+  });
+  assert.equal(markSoldOut.status, 200);
+  assert.deepEqual((await markSoldOut.json()).soldOut, ["pvc-hiro"]);
+
+  const soldOutOrder = await submit();
+  assert.equal(soldOutOrder.status, 409);
+  assert.match((await soldOutOrder.json()).message, /PVC 透卡/);
+
+  const restore = await fetch(`http://127.0.0.1:${port}/api/admin/stock`, {
+    method: "PATCH",
+    headers: {
+      Origin: "https://matto49.github.io",
+      Authorization: "Bearer test-admin-token",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ productId: "pvc-hiro", soldOut: false }),
+  });
+  assert.equal(restore.status, 200);
 
   const first = await submit();
   assert.equal(first.status, 201);
