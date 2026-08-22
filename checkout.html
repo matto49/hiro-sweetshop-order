@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#fffaf4" />
+    <meta
+      name="description"
+      content="小広甜品铺独立结账页：核对制品、选择收款方式，由服务端重新计算账单并生成订单号。"
+    />
+    <title>结账｜小広甜品铺</title>
+    <link rel="icon" href="./assets/owl.png" />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./checkout.css" />
+    <script type="module" src="./checkout.js"></script>
+  </head>
+  <body class="checkout-page">
+    <header class="checkout-header">
+      <a class="back-link" href="./index.html" aria-label="返回继续选购">← 继续选购</a>
+      <div class="checkout-brand">
+        <img src="./assets/papa-logo.png" alt="趴着的筱泽广" />
+        <div>
+          <p>IFE02 · F-3</p>
+          <strong>小広甜品铺</strong>
+        </div>
+      </div>
+      <span class="checkout-step">CHECKOUT</span>
+    </header>
+
+    <main class="checkout-shell">
+      <section class="receipt-panel" aria-labelledby="checkout-title">
+        <div class="checkout-title-row">
+          <div>
+            <p class="section-kicker">YOUR SWEET ORDER</p>
+            <h1 id="checkout-title">核对点单票</h1>
+          </div>
+          <span id="checkout-count" class="count-chip">0 件</span>
+        </div>
+
+        <div id="checkout-items" class="checkout-items" aria-live="polite"></div>
+
+        <div id="checkout-gift" class="checkout-gifts" hidden>
+          <div class="checkout-gift" data-qualified="true">
+            <span aria-hidden="true">✦</span>
+            <div>
+              <strong>已获得：KTN 10cm 方卡</strong>
+              <p>任意消费赠，最终以现场库存为准。</p>
+            </div>
+          </div>
+          <div id="checkout-bag-gift" class="checkout-gift" data-qualified="false">
+            <span aria-hidden="true">♧</span>
+            <div>
+              <strong>小広甜品铺袋子无料</strong>
+              <p id="checkout-bag-status">还差 20 元获得</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="checkout-total">
+          <span>服务端提交时会再次核价</span>
+          <strong>合计 <b id="checkout-total">0</b><small> 元</small></strong>
+        </div>
+      </section>
+
+      <aside class="payment-panel" aria-labelledby="payment-title">
+        <div class="payment-heading">
+          <span class="payment-number">02</span>
+          <div>
+            <p class="section-kicker">SCAN & SUBMIT</p>
+            <h2 id="payment-title">扫码后提交订单</h2>
+          </div>
+        </div>
+
+        <p class="payment-intro">
+          选择收款方式并扫码。付款金额请以本页合计为准；提交只生成订单记录，到账仍以摊主收款记录为准。
+        </p>
+
+        <form id="order-form">
+          <fieldset class="payment-methods">
+            <legend>选择收款方式</legend>
+            <label class="payment-card" data-payment-card="alipay">
+              <input type="radio" name="paymentMethod" value="alipay" required />
+              <span class="payment-card-head">
+                <b class="alipay-dot" aria-hidden="true"></b>
+                <strong>支付宝</strong>
+                <span>点选</span>
+              </span>
+              <img
+                src="./assets/payment-code-placeholder.svg"
+                data-payment-src="./assets/alipay-qr.png"
+                alt="支付宝收款码"
+              />
+            </label>
+
+            <label class="payment-card" data-payment-card="wechat">
+              <input type="radio" name="paymentMethod" value="wechat" required />
+              <span class="payment-card-head">
+                <b class="wechat-dot" aria-hidden="true"></b>
+                <strong>微信支付</strong>
+                <span>点选</span>
+              </span>
+              <img
+                src="./assets/payment-code-placeholder.svg"
+                data-payment-src="./assets/wechat-pay-qr.png"
+                alt="微信收款码"
+              />
+            </label>
+          </fieldset>
+
+          <div id="payment-code-notice" class="payment-code-notice" role="note" hidden>
+            当前为收款码占位图；放入真实图片后无需改代码即可上线。
+          </div>
+
+          <button id="submit-order" class="submit-order" type="submit" disabled>
+            <span>提交订单</span>
+            <small>生成现场核对编号</small>
+          </button>
+        </form>
+
+        <section id="order-result" class="order-result" aria-live="polite" hidden>
+          <p>订单已提交</p>
+          <strong id="order-number"></strong>
+          <span id="order-result-summary"></span>
+          <small>请保留这个页面，现场向摊主出示订单号。</small>
+        </section>
+
+        <p id="submit-error" class="submit-error" role="alert" hidden></p>
+      </aside>
+    </main>
+
+    <footer class="checkout-footer">
+      <img src="./assets/owl.png" alt="" />
+      <p>不收集姓名、手机号或支付账号。订单金额由后端根据商品 ID 与数量重新计算。</p>
+    </footer>
+  </body>
+</html>

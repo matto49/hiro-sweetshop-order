@@ -634,6 +634,133 @@ a:focus-visible {
   line-height: 1.55;
 }
 
+.bag-gift-card {
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1fr);
+  min-height: 250px;
+  padding: 22px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(188, 233, 243, 0.62), transparent 190px),
+    rgba(255, 254, 251, 0.88);
+}
+
+.bag-product-visual {
+  position: relative;
+  width: min(100%, 330px);
+  min-height: 206px;
+  margin: 0 auto;
+}
+
+.paper-bag {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 145px;
+  height: 180px;
+  padding: 34px 14px 12px;
+  color: var(--ink);
+  background: #fffaf0;
+  border: 1px solid rgba(101, 78, 70, 0.12);
+  border-radius: 10px 10px 16px 16px;
+  box-shadow: 0 16px 30px rgba(84, 57, 52, 0.14);
+}
+
+.paper-bag::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(244, 154, 120, 0.14);
+  border-radius: 7px 7px 12px 12px;
+  pointer-events: none;
+}
+
+.paper-bag.papa-side {
+  z-index: 2;
+  left: 18px;
+  bottom: 4px;
+  transform: rotate(-4deg);
+}
+
+.paper-bag.owl-side {
+  z-index: 1;
+  right: 14px;
+  top: 2px;
+  transform: rotate(5deg);
+}
+
+.bag-handle {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  width: 64px;
+  height: 17px;
+  background: #eadfd5;
+  border: 1px solid rgba(71, 59, 58, 0.1);
+  border-radius: 999px;
+  transform: translateX(-50%);
+}
+
+.paper-bag img {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+}
+
+.paper-bag.papa-side img {
+  width: 108px;
+}
+
+.paper-bag b {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.bag-sticker {
+  position: absolute;
+  z-index: 4;
+  right: 6px;
+  bottom: 10px;
+  padding: 9px 12px;
+  color: white;
+  background: var(--peach-strong);
+  border: 3px solid white;
+  border-radius: 999px;
+  box-shadow: 0 8px 18px rgba(235, 120, 92, 0.25);
+  font-size: 0.72rem;
+  font-weight: 800;
+  transform: rotate(-5deg);
+}
+
+.gift-label.bag-label {
+  color: #a8513d;
+  background: #ffe7dc;
+}
+
+.bag-gift-status {
+  display: inline-flex;
+  margin-top: 14px;
+  padding: 8px 11px;
+  color: #9f624c;
+  background: #fff0e9;
+  border-radius: 999px;
+  font-size: 0.76rem;
+}
+
+.bag-gift-card[data-qualified="true"] {
+  border-color: rgba(49, 150, 186, 0.36);
+  box-shadow: 0 0 0 3px rgba(188, 233, 243, 0.28);
+}
+
+.bag-gift-card[data-qualified="true"] .bag-gift-status {
+  color: #26705b;
+  background: #ddf4ea;
+}
+
 .gift-label {
   display: inline-flex;
   padding: 5px 8px;
@@ -1295,6 +1422,14 @@ a:focus-visible {
   .gift-card img {
     width: 102px;
     height: 102px;
+  }
+
+  .bag-gift-card {
+    grid-template-columns: 1fr;
+  }
+
+  .bag-product-visual {
+    min-height: 196px;
   }
 
   .cart-total {

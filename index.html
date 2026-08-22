@@ -30,7 +30,7 @@
         <div class="brand-copy">
           <p class="eyebrow">上海 · 现场点单</p>
           <h1>小広甜品铺</h1>
-          <p class="intro">选好数量，带着点单票来找我们。这里不会产生支付。</p>
+          <p class="intro">选好数量后进入独立结账页，扫码并提交现场核对订单。</p>
         </div>
 
         <img class="papa-logo" src="./assets/papa-logo.png" alt="趴在柜台上的筱泽广吉祥物" />
@@ -43,7 +43,7 @@
         <a href="#new" data-category-link="new">本次新品 <span data-category-count="new">3</span></a>
         <a href="#hiro" data-category-link="hiro">小广制品 <span data-category-count="hiro">17</span></a>
         <a href="#ktn" data-category-link="ktn">KTN 联动 <span data-category-count="ktn">2</span></a>
-        <a href="#gifts" data-category-link="gifts">赠品 <span>2</span></a>
+        <a href="#gifts" data-category-link="gifts">赠品 <span>3</span></a>
       </div>
     </nav>
 
@@ -52,7 +52,7 @@
         <div class="notice-icon" aria-hidden="true">✦</div>
         <div>
           <h2 id="notice-title">点单说明</h2>
-          <p>价格单位为元。数量会保存在本机；完成后可复制清单，现场出示给摊主确认。</p>
+          <p>价格单位为元。数量会保存在本机；选好后进入结账页扫码并提交订单。</p>
         </div>
       </section>
 
@@ -84,6 +84,27 @@
               <p>10 × 15 cm 珠光明信片，欢迎到摊位领取。</p>
             </div>
           </article>
+          <article class="gift-card bag-gift-card" data-qualified="false">
+            <div class="bag-product-visual" role="img" aria-label="小広甜品铺袋子正反面，正面为广趴趴，背面为猫头鹰">
+              <div class="paper-bag papa-side">
+                <span class="bag-handle" aria-hidden="true"></span>
+                <img src="./assets/papa-logo.png" alt="" />
+                <b>小広甜品铺</b>
+              </div>
+              <div class="paper-bag owl-side">
+                <span class="bag-handle" aria-hidden="true"></span>
+                <img src="./assets/owl.png" alt="" />
+                <b>小広甜品铺</b>
+              </div>
+              <span class="bag-sticker">满 20 元赠</span>
+            </div>
+            <div>
+              <span class="gift-label bag-label">满额赠品</span>
+              <h3>小広甜品铺袋子无料</h3>
+              <p>奶油白袋身，广趴趴与纯动物猫头鹰各一面。</p>
+              <strong id="bag-gift-status" class="bag-gift-status">还差 20 元获得</strong>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -103,45 +124,11 @@
           <strong><span aria-hidden="true">合计 </span><b id="cart-total">0</b><small> 元</small></strong>
         </div>
         <button id="open-cart" class="primary-button" type="button" disabled>
-          查看点单票
+          去结账
           <span id="cart-badge" hidden>0</span>
         </button>
       </div>
     </div>
 
-    <dialog id="cart-dialog" class="cart-dialog" aria-labelledby="cart-title">
-      <div class="dialog-handle" aria-hidden="true"></div>
-      <div class="dialog-header">
-        <div>
-          <p>IFE02 · F-3</p>
-          <h2 id="cart-title">我的点单票</h2>
-        </div>
-        <button id="close-cart" class="icon-button" type="button" aria-label="关闭点单票">×</button>
-      </div>
-
-      <div id="cart-items" class="cart-items"></div>
-
-      <div id="cart-gift" class="cart-gift" hidden>
-        <span aria-hidden="true">✦</span>
-        <div>
-          <strong>已获得：KTN 10cm 方卡</strong>
-          <p>任意消费赠，最终以现场库存为准。</p>
-        </div>
-      </div>
-
-      <div class="receipt-total">
-        <span>共 <b id="dialog-count">0</b> 件</span>
-        <strong>合计 <b id="dialog-total">0</b><small> 元</small></strong>
-      </div>
-
-      <p class="no-payment-note">本页面仅生成点单清单，不收集信息，也不进行支付。</p>
-
-      <div class="dialog-actions">
-        <button id="clear-cart" class="text-button" type="button">清空</button>
-        <button id="copy-order" class="primary-button wide" type="button">复制点单清单</button>
-      </div>
-    </dialog>
-
-    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
   </body>
 </html>

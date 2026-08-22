@@ -1,0 +1,28 @@
+[Unit]
+Description=Hiro Sweetshop Order API
+After=network.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+WorkingDirectory=/opt/hiro-order-api
+StateDirectory=hiro-order-api
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=19120
+Environment=ORDER_DATA_DIR=/var/lib/hiro-order-api
+Environment=ALLOWED_ORIGINS=https://matto49.github.io,https://order.matto.top
+ExecStart=/usr/local/bin/node /opt/hiro-order-api/server/server.mjs
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

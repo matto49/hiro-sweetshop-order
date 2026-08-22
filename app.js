@@ -1,6 +1,5 @@
 import {
   calculateCart,
-  formatOrderText,
   sanitizeCart,
   updateQuantity,
 } from "./cart.mjs";
@@ -263,15 +262,7 @@ const productFamilies = [
 
 const storageKey = "hiro-sweetshop-cart-v1";
 const catalog = document.querySelector("#catalog");
-const cartDialog = document.querySelector("#cart-dialog");
-const cartItems = document.querySelector("#cart-items");
 const openCartButton = document.querySelector("#open-cart");
-const closeCartButton = document.querySelector("#close-cart");
-const clearCartButton = document.querySelector("#clear-cart");
-const copyOrderButton = document.querySelector("#copy-order");
-const toast = document.querySelector("#toast");
-let clearConfirmationTimer;
-let toastTimer;
 
 function loadCart() {
   try {
@@ -367,41 +358,6 @@ function renderCatalog() {
   });
 }
 
-function renderCartItems(summary) {
-  if (!summary.items.length) {
-    cartItems.innerHTML = `
-      <div class="empty-cart">
-        <img src="./assets/owl.png" alt="" />
-        <strong>点单票还是空的</strong>
-        <p>先去挑几件喜欢的制品吧。</p>
-      </div>
-    `;
-    return;
-  }
-
-  cartItems.innerHTML = summary.items
-    .map(
-      (item) => `
-        <article class="cart-line" data-cart-product-id="${item.id}">
-          <img src="${item.image}" alt="" />
-          <div class="cart-line-copy">
-            <h3>${item.name}</h3>
-            <p>${item.price} × ${item.quantity}</p>
-          </div>
-          <div class="cart-line-actions">
-            <strong>${item.subtotal}</strong>
-            <div class="mini-stepper" aria-label="${item.name}数量">
-              <button type="button" data-cart-action="decrease" aria-label="减少一件${item.name}">−</button>
-              <output>${item.quantity}</output>
-              <button type="button" data-cart-action="increase" aria-label="增加一件${item.name}">＋</button>
-            </div>
-          </div>
-        </article>
-      `,
-    )
-    .join("");
-}
-
 function render() {
   const summary = calculateCart(products, cart);
   document.querySelectorAll(".product-card").forEach((card) => {
@@ -418,16 +374,16 @@ function render() {
     ? `已选 ${summary.count} 件制品`
     : "还没有选择制品";
   document.querySelector("#cart-total").textContent = summary.total;
-  document.querySelector("#dialog-count").textContent = summary.count;
-  document.querySelector("#dialog-total").textContent = summary.total;
   document.querySelector("#cart-badge").textContent = summary.count;
   document.querySelector("#cart-badge").hidden = summary.count === 0;
-  document.querySelector("#cart-gift").hidden = summary.count === 0;
+  const bagGiftCard = document.querySelector(".bag-gift-card");
+  const bagGiftStatus = document.querySelector("#bag-gift-status");
+  bagGiftCard.dataset.qualified = summary.gifts.bag ? "true" : "false";
+  bagGiftStatus.textContent = summary.gifts.bag
+    ? "已获得袋子无料 ✓"
+    : `还差 ${summary.gifts.bagRemaining} 元获得`;
   document.querySelector("#cart-bar").dataset.empty = summary.count === 0 ? "true" : "false";
   openCartButton.disabled = summary.count === 0;
-  copyOrderButton.disabled = summary.count === 0;
-  clearCartButton.disabled = summary.count === 0;
-  renderCartItems(summary);
   saveCart();
 }
 
@@ -443,86 +399,9 @@ catalog.addEventListener("click", (event) => {
   changeQuantity(card.dataset.productId, button.dataset.action === "increase" ? 1 : -1);
 });
 
-cartItems.addEventListener("click", (event) => {
-  const button = event.target.closest("button[data-cart-action]");
-  if (!button) return;
-  const line = button.closest("[data-cart-product-id]");
-  changeQuantity(line.dataset.cartProductId, button.dataset.cartAction === "increase" ? 1 : -1);
-});
-
 openCartButton.addEventListener("click", () => {
-  render();
-  cartDialog.showModal();
-  document.body.classList.add("dialog-open");
+  window.location.href = "./checkout.html";
 });
-
-function closeCart() {
-  cartDialog.close();
-  document.body.classList.remove("dialog-open");
-}
-
-closeCartButton.addEventListener("click", closeCart);
-cartDialog.addEventListener("click", (event) => {
-  if (event.target === cartDialog) closeCart();
-});
-cartDialog.addEventListener("close", () => document.body.classList.remove("dialog-open"));
-
-clearCartButton.addEventListener("click", () => {
-  if (clearCartButton.dataset.confirm !== "true") {
-    clearCartButton.dataset.confirm = "true";
-    clearCartButton.textContent = "再点一次清空";
-    clearConfirmationTimer = window.setTimeout(() => {
-      clearCartButton.dataset.confirm = "false";
-      clearCartButton.textContent = "清空";
-    }, 3000);
-    return;
-  }
-
-  window.clearTimeout(clearConfirmationTimer);
-  cart = {};
-  clearCartButton.dataset.confirm = "false";
-  clearCartButton.textContent = "清空";
-  render();
-  closeCart();
-  showToast("点单票已清空");
-});
-
-async function copyText(text) {
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
-    return;
-  }
-  const textarea = document.createElement("textarea");
-  textarea.value = text;
-  textarea.style.position = "fixed";
-  textarea.style.opacity = "0";
-  document.body.append(textarea);
-  textarea.select();
-  document.execCommand("copy");
-  textarea.remove();
-}
-
-copyOrderButton.addEventListener("click", async () => {
-  const summary = calculateCart(products, cart);
-  if (!summary.items.length) return;
-  try {
-    await copyText(formatOrderText(summary));
-    copyOrderButton.textContent = "已复制 ✓";
-    showToast("点单清单已复制，可以发给摊主或现场出示");
-    window.setTimeout(() => (copyOrderButton.textContent = "复制点单清单"), 1800);
-  } catch {
-    showToast("复制失败，请截图保存点单票");
-  }
-});
-
-function showToast(message) {
-  window.clearTimeout(toastTimer);
-  toast.textContent = message;
-  toast.dataset.visible = "true";
-  toastTimer = window.setTimeout(() => {
-    toast.dataset.visible = "false";
-  }, 2600);
-}
 
 renderCatalog();
 

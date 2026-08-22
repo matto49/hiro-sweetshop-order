@@ -1,4 +1,5 @@
 export const MAX_QUANTITY = 99;
+export const BAG_GIFT_THRESHOLD = 20;
 
 export function clampQuantity(value) {
   const numeric = Number.parseInt(value, 10);
@@ -23,7 +24,7 @@ export function setQuantity(cart, productId, quantity) {
 }
 
 export function calculateCart(products, cart) {
-  return products.reduce(
+  const summary = products.reduce(
     (summary, product) => {
       const quantity = clampQuantity(cart[product.id] || 0);
       if (!quantity) return summary;
@@ -35,6 +36,17 @@ export function calculateCart(products, cart) {
     },
     { items: [], count: 0, total: 0 },
   );
+  summary.gifts = calculateGiftEligibility(summary.total);
+  return summary;
+}
+
+export function calculateGiftEligibility(total) {
+  const normalizedTotal = Number.isFinite(total) ? Math.max(0, total) : 0;
+  return {
+    ktnCard: normalizedTotal > 0,
+    bag: normalizedTotal >= BAG_GIFT_THRESHOLD,
+    bagRemaining: Math.max(0, BAG_GIFT_THRESHOLD - normalizedTotal),
+  };
 }
 
 export function sanitizeCart(products, storedCart) {
@@ -56,6 +68,11 @@ export function formatOrderText(summary) {
   });
   lines.push("", `共 ${summary.count} 件｜合计 ${summary.total} 元`);
   lines.push("赠品：KTN 10cm 方卡（任意消费赠，数量以现场为准）");
+  lines.push(
+    summary.gifts?.bag
+      ? "赠品：小広甜品铺袋子无料（满 20 元赠，已获得）"
+      : `袋子无料：还差 ${summary.gifts?.bagRemaining ?? BAG_GIFT_THRESHOLD} 元获得`,
+  );
   lines.push("", "此清单不含支付信息，请在摊位现场确认。");
   return lines.join("\n");
 }

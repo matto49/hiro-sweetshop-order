@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   calculateCart,
+  calculateGiftEligibility,
   clampQuantity,
   formatOrderText,
   sanitizeCart,
@@ -61,4 +62,21 @@ test("different character variants stay as separate order lines", () => {
   const text = formatOrderText(summary);
   assert.match(text, /藤田琴音 × 1/);
   assert.match(text, /筱泽广 × 2/);
+});
+
+test("bag gift qualification includes exactly 20 yuan", () => {
+  assert.deepEqual(calculateGiftEligibility(19), {
+    ktnCard: true,
+    bag: false,
+    bagRemaining: 1,
+  });
+  assert.deepEqual(calculateGiftEligibility(20), {
+    ktnCard: true,
+    bag: true,
+    bagRemaining: 0,
+  });
+  const summary = calculateCart(products, { book: 1 });
+  assert.equal(summary.gifts.bag, true);
+  assert.match(formatOrderText(summary), /小広甜品铺袋子无料/);
+  assert.match(formatOrderText(summary), /已获得/);
 });
