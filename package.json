@@ -4,7 +4,7 @@
   "type": "module",
   "description": "小広甜品铺出摊点单：iPad 离线点单页 + 订单同步服务",
   "scripts": {
-    "test": "node --test tests/"
+    "test": "node --test \"tests/*.test.mjs\""
   },
   "engines": {
     "node": ">=20"

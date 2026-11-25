@@ -1,4 +1,5 @@
-// A12 点单订单同步服务：iPad 离线记账，联网后把订单补传到这里。
+// 小広甜品铺出摊点单的订单同步服务：iPad 离线记账，联网后把订单补传到这里。
+// 订单按场次分目录：ORDER_DATA_DIR/events/<EVENT_ID>/，EVENT_ID 必填。
 // 订单按行追加到 JSONL；同一订单号重复上传只记一次。
 // 库存与上下架存在 stock.json：点单页按 GET /api/stock 渲染菜单，收到新订单时在这里扣减。
 // 汇总 / CSV / 清空 / 改库存需要 Bearer 管理口令（ADMIN_TOKEN）。
@@ -9,7 +10,12 @@ import { resolve } from "node:path";
 
 const HOST = process.env.HOST || "127.0.0.1";
 const PORT = Number(process.env.PORT || 19130);
-const DATA_DIR = process.env.ORDER_DATA_DIR || "./data";
+const EVENT_ID = process.env.EVENT_ID || "";
+if (!/^[a-z0-9][a-z0-9-]{0,63}$/.test(EVENT_ID)) {
+  console.error(`EVENT_ID 未设置或不合法（只能用小写字母、数字和连字符）：${JSON.stringify(EVENT_ID)}`);
+  process.exit(1);
+}
+const DATA_DIR = resolve(process.env.ORDER_DATA_DIR || "./data", "events", EVENT_ID);
 const DATA_FILE = resolve(DATA_DIR, "orders.jsonl");
 const STOCK_FILE = resolve(DATA_DIR, "stock.json");
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || "";
@@ -268,7 +274,7 @@ const server = createServer(async (req, res) => {
 
   try {
     if (req.method === "GET" && url.pathname === "/api/health") {
-      return send(res, 200, { ok: true, service: "hiro-a12-api" });
+      return send(res, 200, { ok: true, service: "hiro-booth-api", event: EVENT_ID });
     }
 
     if (req.method === "POST" && url.pathname === "/api/orders") {
@@ -307,4 +313,4 @@ const server = createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, HOST, () => console.log(`hiro-a12-api listening on ${HOST}:${PORT}`));
+server.listen(PORT, HOST, () => console.log(`hiro-booth-api (${EVENT_ID}) listening on ${HOST}:${PORT}`));
