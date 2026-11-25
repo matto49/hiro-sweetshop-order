@@ -1,41 +1,8 @@
 // 离线缓存：首次联网打开后，所有页面和图片都存在 iPad 本机，展会现场断网照常使用。
-// 改了文件后：iPad 联网打开会在后台更新，再打开一次即生效。删了/改名了文件时把 VERSION 加一。
-const VERSION = "a12-v21";
-const FILES = [
-  "./",
-  "index.html",
-  "styles.css",
-  "app.js",
-  "catalog.js",
-  "manifest.webmanifest",
-  "assets/apple-touch-icon.png",
-  "assets/badge-kotone.webp",
-  "assets/banner-sweet.webp",
-  "assets/book.webp",
-  "assets/consign-book.webp",
-  "assets/consign-mug.webp",
-  "assets/consign-tote.webp",
-  "assets/eye-mask.webp",
-  "assets/icon-512.png",
-  "assets/avatar.webp",
-  "assets/pvc-hiro.webp",
-  "assets/pvc-kotone.webp",
-  "assets/qr-alipay.webp",
-  "assets/qr-wechat.webp",
-  "assets/rabbit-stand.webp",
-  "assets/shikishi-hiro.webp",
-  "assets/shikishi-kotone.webp",
-  "assets/spring-hiro.webp",
-  "assets/spring-kotone.webp",
-  "assets/spring-lilja.webp",
-  "assets/spring-misuzu.webp",
-  "assets/whisper-stand.webp",
-  "assets/window-china.webp",
-  "assets/window-hiro.webp",
-  "assets/window-kotone.webp",
-  "assets/window-lilja.webp",
-  "assets/window-misuzu.webp",
-];
+// 改了文件后：iPad 联网打开会在后台更新，再打开一次即生效。
+// 下面两行由 tools/build-web.mjs 在构建时生成：VERSION 每次构建都变，FILES 是这场实际输出的全部文件。
+const VERSION = "__VERSION__";
+const FILES = __FILES__;
 
 self.addEventListener("install", (event) => {
   event.waitUntil(// cache: "reload" 绕过浏览器 HTTP 缓存，确保装进来的是服务器上的最新文件
