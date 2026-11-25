@@ -1,0 +1,14 @@
+{
+  "name": "小広甜品铺 · A12 点单",
+  "short_name": "小広点单",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fdf7f1",
+  "theme_color": "#fbf4ec",
+  "icons": [
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "assets/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

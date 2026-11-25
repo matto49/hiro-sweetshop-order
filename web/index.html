@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="小広点单">
+  <meta name="theme-color" content="#fbf4ec">
+  <title>小広甜品铺 · A12</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="banner" id="banner">
+    <img src="assets/banner-sweet.webp" alt="小広甜品铺 · A12 · 杭州 · 杭偶O" draggable="false">
+  </header>
+
+  <main class="layout">
+    <section class="menu" id="menu" aria-label="商品"></section>
+
+    <aside class="cart" id="cart" aria-label="已选商品">
+      <button class="cart-head" id="cart-toggle" type="button">
+        <span class="cart-count" id="cart-count">0 件</span>
+      </button>
+      <ol class="cart-list" id="cart-list"></ol>
+      <p class="cart-empty" id="cart-empty">点一下商品卡片<br>就能放进篮子里～</p>
+      <div class="cart-foot">
+        <div class="cart-total"><span>合计<em id="cart-count-inline"></em></span><strong id="cart-total">¥0</strong></div>
+        <button class="btn-pay" id="btn-pay" type="button" disabled>去付款</button>
+        <button class="btn-clear" id="btn-clear" type="button" hidden>清空篮子</button>
+      </div>
+    </aside>
+  </main>
+
+  <div class="pay" id="pay" hidden>
+    <div class="pay-card" role="dialog" aria-modal="true" aria-labelledby="pay-amount">
+      <div class="pay-summary">
+        <p class="pay-label">需要支付</p>
+        <p class="pay-amount" id="pay-amount">¥0</p>
+        <ol class="pay-list" id="pay-list"></ol>
+      </div>
+      <div class="pay-codes">
+        <p class="pay-hint">请用微信或支付宝扫码，输入金额 <b id="pay-amount-inline">¥0</b></p>
+        <div class="qr-row">
+          <figure class="qr qr-wechat">
+            <div class="qr-frame" id="qr-wechat"></div>
+            <figcaption>微信支付</figcaption>
+          </figure>
+          <figure class="qr qr-alipay">
+            <div class="qr-frame" id="qr-alipay"></div>
+            <figcaption>支付宝</figcaption>
+          </figure>
+        </div>
+        <p class="pay-sub">付款后把成功页面给摊主看一眼就好～</p>
+        <div class="pay-actions">
+          <button class="btn-ghost" id="btn-back" type="button">返回修改</button>
+          <button class="btn-done" id="btn-done" type="button">我付好啦</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="thanks" id="thanks" hidden>
+    <div class="thanks-card" role="status">
+      <div class="thanks-avatar"><img src="assets/avatar.webp" alt="" draggable="false"></div>
+      <p class="thanks-title">谢谢惠顾！</p>
+      <p class="thanks-sub">祝你逛展愉快～</p>
+      <div class="thanks-bar"><span></span></div>
+    </div>
+  </div>
+
+  <dialog class="admin" id="admin">
+    <form method="dialog" class="admin-inner">
+      <header class="admin-head">
+        <h2>摊主设置</h2>
+        <button class="admin-close" value="close" aria-label="关闭">完成</button>
+      </header>
+
+      <section class="admin-sec">
+        <h3>收款码</h3>
+        <p class="admin-note">已内置微信、支付宝收款码。需要临时换码时可在这里上传，只保存在这台 iPad 上；点「移除」恢复内置码。</p>
+        <div class="admin-qr-row">
+          <label class="admin-qr">
+            <span>微信</span>
+            <div class="qr-frame" id="admin-qr-wechat"></div>
+            <input type="file" accept="image/*" data-qr="wechat">
+            <button type="button" class="link-btn" data-qr-clear="wechat">移除</button>
+          </label>
+          <label class="admin-qr">
+            <span>支付宝</span>
+            <div class="qr-frame" id="admin-qr-alipay"></div>
+            <input type="file" accept="image/*" data-qr="alipay">
+            <button type="button" class="link-btn" data-qr-clear="alipay">移除</button>
+          </label>
+        </div>
+      </section>
+
+      <section class="admin-sec">
+        <h3>库存</h3>
+        <p class="admin-note">库存存在服务器上，点单页按服务器的数字显示菜单，改动需要联网和管理口令。顾客点「我付好啦」后订单传到服务器时自动扣减，扣到 0 就从菜单上隐藏。临时卖完了点「售尽」；补货时改回数字即可重新上架；空着表示不限量。「下架」是暂时不卖、保留库存数。</p>
+        <input class="admin-token" id="admin-token" type="password" autocomplete="off" placeholder="管理口令">
+        <p class="admin-sync" id="stock-sync"></p>
+        <p class="admin-note error" id="stock-error" role="alert"></p>
+        <div class="admin-stock" id="admin-stock"></div>
+      </section>
+
+      <section class="admin-sec">
+        <h3>本机记录</h3>
+        <p class="admin-note">顾客点「我付好啦」时记一笔，先存在这台设备上，联网时自动上传到服务器。</p>
+        <p class="admin-sync" id="admin-sync"></p>
+        <div class="admin-stats" id="admin-stats"></div>
+        <div class="admin-btns">
+          <button type="button" class="btn-ghost" id="btn-sync" hidden>立即上传</button>
+          <button type="button" class="btn-ghost" id="btn-export">导出本机 CSV</button>
+          <button type="button" class="btn-ghost danger" id="btn-reset-log">清空本机记录</button>
+        </div>
+      </section>
+
+      <section class="admin-sec">
+        <h3>服务器汇总</h3>
+        <p class="admin-note">所有设备上传的订单合在一起看。使用上面「库存」里填的管理口令，口令只保存在这台设备上。</p>
+        <div class="admin-btns">
+          <button type="button" class="btn-ghost" id="btn-server-summary">查看汇总</button>
+          <button type="button" class="btn-ghost" id="btn-server-csv">导出服务器 CSV</button>
+          <button type="button" class="btn-ghost danger" id="btn-server-archive">清空服务器记录</button>
+        </div>
+        <div class="admin-stats" id="server-stats"></div>
+      </section>
+
+      <p class="admin-foot" id="admin-offline"></p>
+    </form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

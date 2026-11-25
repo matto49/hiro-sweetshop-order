@@ -1,0 +1,7 @@
+.temp/
+private/
+node_modules/
+data/
+dist/
+.ryugi/
+.DS_Store
