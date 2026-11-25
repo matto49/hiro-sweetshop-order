@@ -1,5 +1,15 @@
-// 杭州 · 杭偶O · A12 现场商品。价格、规格与品书 v3（含寄售）一致；菜单上不单独标注寄售。
+// 杭偶O（2026-10-24）现场商品。当时的商品表没有留底，这份是 2026-11-25 事后补的：
+// 以南京偶O 的商品表为底，按 10-24 的订单核对过商品 id、名称和价格（见 tests/events.test.mjs）。
+// 与南京偶O 的差别：色纸当时只有一款，菜单上叫「触感膜色纸」，商品 id 是 shikishi-kotone。
 // group：同一 group 的款式在菜单里合并成一组，组标题显示一次名称/规格/价格。
+
+export const event = {
+  id: "hz-ouo-2026-10",
+  name: "杭偶O",
+  city: "杭州",
+  booth: "A12",
+  date: "2026-10-24",
+};
 
 export const shops = [
   {
@@ -21,12 +31,8 @@ export const shops = [
       {
         id: "paper",
         title: "触感膜色纸",
-        spec: "流沙银边 · 14 × 14 cm",
-        price: 15,
-        variants: true,
         items: [
-          { id: "shikishi-hiro", name: "筱澤广", image: "assets/shikishi-hiro.webp" },
-          { id: "shikishi-kotone", name: "藤田琴音", image: "assets/shikishi-kotone.webp" },
+          { id: "shikishi-kotone", name: "触感膜色纸", spec: "流沙银边 · 14 × 14 cm", price: 15, image: "assets/shikishi-kotone.webp" },
         ],
       },
       {
