@@ -1,0 +1,33 @@
+[Unit]
+Description=小広甜品铺出摊点单 订单同步服务（hiro-booth-api）
+After=network.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+WorkingDirectory=/opt/hiro-booth-api
+# 数据在 /var/lib/private/hiro-booth-api/events/<EVENT_ID>/
+StateDirectory=hiro-booth-api
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=19130
+Environment=ORDER_DATA_DIR=/var/lib/hiro-booth-api
+Environment=ALLOWED_ORIGINS=https://qing.matto.top
+# ADMIN_TOKEN=...（管理口令，不进仓库）
+EnvironmentFile=/etc/hiro-booth-api/admin.env
+# EVENT_ID=<场次>，由 tools/deploy.sh 写入
+EnvironmentFile=/etc/hiro-booth-api/event.env
+ExecStart=/usr/local/bin/node /opt/hiro-booth-api/server.mjs
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target
