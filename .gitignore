@@ -5,3 +5,9 @@ data/
 dist/
 .ryugi/
 .DS_Store
+# 公开仓库：收款码、订单、库存、口令放在哪个目录都不提交
+qr-*
+*.jsonl
+*.bak
+stock.json
+*.env

@@ -4,7 +4,6 @@
 // 旧版（杭偶O / 南京偶O）全部用 hz-a12: 前缀，第一次打开新版时搬一次。
 
 export const LEGACY_EVENT_ID = "hz-ouo-2026-10";
-const LEGACY_PREFIX = "hz-a12:";
 const MIGRATED_FLAG = "booth:migrated-hz-a12";
 
 export function keysFor(eventId) {
@@ -45,17 +44,26 @@ export function migrateLegacy(storage) {
   }
 }
 
+// 场次 id 一律是「名字-年-月」（例如 nj-ouo-2026-11）。同域还挂着别的应用，
+// 只认这种形式的键，免得把别人的数据当成订单。
+const EVENT_LOG_KEY = /^[a-z0-9]+(-[a-z0-9]+)*-\d{4}-\d{2}:log$/;
+
 // 本机上其他场次的订单记录键（用来提示「上一场还有单没上传」）
 export function otherEventLogKeys(storage, eventId) {
   try {
     const out = [];
     for (let i = 0; i < storage.length; i++) {
       const k = storage.key(i);
-      if (!k || !k.endsWith(":log") || k.startsWith(LEGACY_PREFIX) || k.startsWith("booth:")) continue;
-      if (k !== `${eventId}:log`) out.push(k);
+      if (k && EVENT_LOG_KEY.test(k) && k !== `${eventId}:log`) out.push(k);
     }
     return out.sort();
   } catch {
     return [];
   }
+}
+
+// 本机订单记录：不是数组就当成空的，去掉不像订单的元素（数据被别的东西写坏时也不至于打不开页面）
+export function safeLog(value) {
+  if (!Array.isArray(value)) return [];
+  return value.filter((o) => o && typeof o === "object" && Array.isArray(o.items));
 }

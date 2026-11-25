@@ -62,7 +62,7 @@ iPad 上的 localStorage：
 - `booth:device`、`booth:admin-token`、`booth:qr`：跟着 iPad 走，换场次不变。
 - `<场次>:log`、`<场次>:stock-server`：本机订单记录和库存缓存，按场次分开。
 
-旧版用的 `hz-a12:*` 键，会在第一次打开新版时搬过来（只搬一次，旧键保留）。换场次后，如果本机上一场还有没上传的单，摊主设置的「本机记录」里会提示，点「补传」传到当前服务器（服务端按订单号去重）。
+旧版用的 `hz-a12:*` 键，会在第一次打开新版时搬过来（只搬一次，旧键保留）。换场次后，如果本机上一场还有没上传的单，摊主设置的「本机记录」里会提示，点「补传」传到当前服务器（服务端在同一场次里按订单号去重）。
 
 ## 服务器上第一次安装
 
@@ -70,6 +70,26 @@ iPad 上的 localStorage：
 
 - `/etc/hiro-booth-api/admin.env`：`ADMIN_TOKEN=<管理口令>`，权限 600。
 - nginx：`/etc/nginx/sites-available/qing` 里放 `server/nginx-qing.conf` 的两段，`nginx -t` 通过后再 reload。
+
+## 回滚
+
+```bash
+ssh ycy 'ls -1 /var/www/hiro-booth/releases/'                     # 找上一版
+ssh ycy 'ln -sfn /var/www/hiro-booth/releases/<上一版> /var/www/hiro-booth/current'
+# 如果场次也要退回：改 /etc/hiro-booth-api/event.env 里的 EVENT_ID，再 systemctl restart hiro-booth-api
+```
+
+## 2026-11-25 从旧版切换的记录
+
+旧服务 `hiro-a12-api`（数据 `/var/lib/private/hiro-a12-api/`）和 IFE02 的 `hiro-order-api` 已停用，数据原样保留。切换顺序（旧服务占着 19130 端口，新服务第一次启动前要先迁好数据）：
+
+1. 备份旧数据、unit 和 nginx 配置到 `/root/ops-backups/`。
+2. 停掉并 disable `hiro-a12-api`。
+3. 在新服务第一次启动之前，用 `tools/split-orders.mjs` 把旧订单拆到 `/var/lib/private/hiro-booth-api/events/<场次>/`，核对单数和金额。
+4. `tools/deploy.sh nj-ouo-2026-11`。
+5. nginx 的 `/hiro-a12/` 改指 `/var/www/hiro-booth/current/`，`nginx -t` 通过后再 reload。
+6. 公网核对，确认订单文件属主是服务用户（能写入）。
+7. 每台 iPad 联网打开两次，横幅显示新摊位号、摊主设置底部显示「已缓存」再断网用。
 
 ## 测试
 

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
-import { LEGACY_EVENT_ID, keysFor, migrateLegacy, otherEventLogKeys } from "../web/storage-keys.js";
+import { LEGACY_EVENT_ID, keysFor, migrateLegacy, otherEventLogKeys, safeLog } from "../web/storage-keys.js";
 
 // 和浏览器 localStorage 接口一致的内存版
 function memoryStorage(init = {}) {
@@ -86,5 +86,29 @@ describe("otherEventLogKeys", () => {
       "hz-a12:log": "[]",
     });
     assert.deepEqual(otherEventLogKeys(s, "nj-ouo-2026-11"), ["hz-ouo-2026-10:log"]);
+  });
+});
+
+describe("同域别的应用的键", () => {
+  test("只认「场次-年-月:log」形式的键", () => {
+    const s = memoryStorage({
+      "hz-ouo-2026-10:log": "[]",
+      "xbot:log": "[]",
+      "paseo-relay:log": "{}",
+      "Some-App-2026-10:log": "[]",
+    });
+    assert.deepEqual(otherEventLogKeys(s, "nj-ouo-2026-11"), ["hz-ouo-2026-10:log"]);
+  });
+});
+
+describe("safeLog", () => {
+  test("不是数组时当成空记录", () => {
+    assert.deepEqual(safeLog({ a: 1 }), []);
+    assert.deepEqual(safeLog(null), []);
+    assert.deepEqual(safeLog("x"), []);
+  });
+  test("去掉不像订单的元素", () => {
+    const good = { id: "o1", t: "2026-11-21T03:00:00.000Z", total: 25, items: [{ id: "eye-mask", qty: 1 }], synced: false };
+    assert.deepEqual(safeLog([good, null, 3, { id: "x" }, { items: "no" }]), [good]);
   });
 });

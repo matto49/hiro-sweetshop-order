@@ -31,7 +31,6 @@ test("构建南京偶O：catalog.js 是这场的配置，manifest 带摊位号",
   await buildWeb({ eventId: "nj-ouo-2026-11", outDir: out });
   const { event } = await import(pathToFileURL(join(out, "catalog.js")));
   assert.equal(event.id, "nj-ouo-2026-11");
-  assert.ok(existsSync(join(out, "storage-keys.js")));
   assert.ok(existsSync(join(out, "assets", "eye-mask.webp")));
   const manifest = JSON.parse(readFileSync(join(out, "manifest.webmanifest"), "utf8"));
   assert.equal(manifest.name, "小広甜品铺 · 5 点单");
@@ -88,4 +87,14 @@ test("同一目录可以重复构建", async () => {
 
 test("场次不存在时报错", async () => {
   await assert.rejects(buildWeb({ eventId: "no-such-event", outDir: join(tmp, "x") }), /no-such-event/);
+});
+
+test("storage-keys 内联进 app.js：旧版离线缓存里没有这个文件也能打开", async () => {
+  const out = join(tmp, "inline");
+  await buildWeb({ eventId: "nj-ouo-2026-11", outDir: out });
+  const app = readFileSync(join(out, "app.js"), "utf8");
+  assert.doesNotMatch(app, /from\s+["']\.\/storage-keys\.js["']/);
+  assert.match(app, /function migrateLegacy/);
+  assert.ok(!existsSync(join(out, "storage-keys.js")));
+  assert.ok(!swFiles(out).files.includes("storage-keys.js"));
 });

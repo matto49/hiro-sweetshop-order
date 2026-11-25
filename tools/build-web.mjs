@@ -51,6 +51,17 @@ export async function buildWeb({ eventId, outDir, privateDir }) {
     }
   }
 
+  // storage-keys.js 内联进 app.js：第一次从旧版升级时，旧版的离线缓存里没有这个文件，
+  // 新 app.js 若还要单独加载它，在新缓存装好之前断网打开就会白屏。
+  const keysPath = join(out, "storage-keys.js");
+  const appPath = join(out, "app.js");
+  const keysSrc = (await readFile(keysPath, "utf8")).replace(/^export /gm, "");
+  const importLine = /^import \{[^}]*\} from "\.\/storage-keys\.js";\n/m;
+  const appSrc = await readFile(appPath, "utf8");
+  if (!importLine.test(appSrc)) throw new Error("web/app.js 里找不到 storage-keys.js 的 import");
+  await writeFile(appPath, appSrc.replace(importLine, () => `// ---- 以下内联自 storage-keys.js ----\n${keysSrc}// ---- 内联结束 ----\n`));
+  await rm(keysPath);
+
   const manifestPath = join(out, "manifest.webmanifest");
   const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
   manifest.name = `小広甜品铺 · ${event.booth} 点单`;

@@ -1,5 +1,5 @@
 import { event, products, productById } from "./catalog.js";
-import { keysFor, migrateLegacy, otherEventLogKeys } from "./storage-keys.js";
+import { keysFor, migrateLegacy, otherEventLogKeys, safeLog } from "./storage-keys.js";
 
 const $ = (sel) => document.querySelector(sel);
 const yuan = (n) => `¥${n}`;
@@ -355,7 +355,7 @@ function newOrderId() {
 // 旧版本记录（items 为 [id, qty]、没有订单号）按当前菜单补全，之后照常上传
 // key：默认是当前场次；补传上一场时传别的场次的键
 function readLog(key = KEY_LOG) {
-  const log = store.get(key, []);
+  const log = safeLog(store.get(key, []));
   let changed = false;
   const out = log.map((o) => {
     if (o.id && o.items.every((it) => !Array.isArray(it))) return o;
@@ -456,7 +456,13 @@ function renderStats() {
 // 换了场次后，本机上一场还有没传上去的单：提示并提供补传
 function otherPending() {
   return otherEventLogKeys(localStorage, event.id)
-    .map((key) => ({ key, n: readLog(key).filter((o) => !o.synced && !o.rejected).length }))
+    .map((key) => {
+      try {
+        return { key, n: readLog(key).filter((o) => !o.synced && !o.rejected).length };
+      } catch {
+        return { key, n: 0 }; // 某一场的记录读不了就跳过，别让摊主设置打不开
+      }
+    })
     .filter((x) => x.n);
 }
 

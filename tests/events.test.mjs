@@ -18,6 +18,7 @@ for (const dir of dirs) {
     const mod = await import(pathToFileURL(join(EVENTS, dir, "event.js")));
     const { event, shops, products, productById } = mod;
     assert.equal(event.id, dir, "event.id 要和目录名一致");
+    assert.match(event.id, /^[a-z0-9]+(-[a-z0-9]+)*-\d{4}-\d{2}$/, "场次 id 要以 -年-月 结尾，例如 nj-ouo-2026-11");
     for (const k of ["name", "city", "booth", "date"]) assert.ok(typeof event[k] === "string" && event[k], `缺 event.${k}`);
     assert.match(event.date, /^\d{4}-\d{2}-\d{2}$/);
     assert.ok(Array.isArray(shops) && shops.length > 0);
