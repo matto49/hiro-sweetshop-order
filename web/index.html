@@ -8,14 +8,18 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="小広点单">
   <meta name="theme-color" content="#fbf4ec">
-  <title>小広甜品铺 · A12</title>
+  <title>小広甜品铺</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="banner" id="banner">
-    <img src="assets/banner-sweet.webp" alt="小広甜品铺 · A12 · 杭州 · 杭偶O" draggable="false">
+    <img src="assets/banner-sweet.webp" alt="小広甜品铺" draggable="false">
+    <div class="banner-tag" aria-hidden="true">
+      <span class="banner-booth" id="banner-booth"></span>
+      <span class="banner-place" id="banner-place"></span>
+    </div>
   </header>
 
   <main class="layout">
@@ -111,6 +115,11 @@
         <h3>本机记录</h3>
         <p class="admin-note">顾客点「我付好啦」时记一笔，先存在这台设备上，联网时自动上传到服务器。</p>
         <p class="admin-sync" id="admin-sync"></p>
+        <p class="admin-sync admin-other" id="admin-other" hidden>
+          <span class="sync-dot is-pending"></span>
+          <b id="admin-other-text"></b>
+          <button type="button" class="link-btn" id="btn-sync-other">补传</button>
+        </p>
         <div class="admin-stats" id="admin-stats"></div>
         <div class="admin-btns">
           <button type="button" class="btn-ghost" id="btn-sync" hidden>立即上传</button>

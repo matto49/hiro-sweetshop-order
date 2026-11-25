@@ -1,4 +1,5 @@
-import { products, productById } from "./catalog.js";
+import { event, products, productById } from "./catalog.js";
+import { keysFor, migrateLegacy, otherEventLogKeys } from "./storage-keys.js";
 
 const $ = (sel) => document.querySelector(sel);
 const yuan = (n) => `¥${n}`;
@@ -23,11 +24,18 @@ const store = {
   },
 };
 
-const KEY_QR = "hz-a12:qr";
-const KEY_STOCK = "hz-a12:stock-server"; // 最近一次从服务器拿到的库存，断网时照它渲染
-const KEY_LOG = "hz-a12:log";
-const KEY_DEVICE = "hz-a12:device";
-const KEY_TOKEN = "hz-a12:admin-token";
+// 旧版的 hz-a12: 键搬到新键（只搬一次）。要在下面读取本机数据之前做。
+try {
+  migrateLegacy(localStorage);
+} catch {
+  /* 存储不可用就算了 */
+}
+const KEYS = keysFor(event.id);
+const KEY_QR = KEYS.qr;
+const KEY_STOCK = KEYS.stock; // 最近一次从服务器拿到的库存，断网时照它渲染
+const KEY_LOG = KEYS.log;
+const KEY_DEVICE = KEYS.device;
+const KEY_TOKEN = KEYS.token;
 
 let pendingReload = false;
 
@@ -345,8 +353,9 @@ function newOrderId() {
 }
 
 // 旧版本记录（items 为 [id, qty]、没有订单号）按当前菜单补全，之后照常上传
-function readLog() {
-  const log = store.get(KEY_LOG, []);
+// key：默认是当前场次；补传上一场时传别的场次的键
+function readLog(key = KEY_LOG) {
+  const log = store.get(key, []);
   let changed = false;
   const out = log.map((o) => {
     if (o.id && o.items.every((it) => !Array.isArray(it))) return o;
@@ -357,7 +366,7 @@ function readLog() {
       .filter((it) => it.id && it.name);
     return { id: o.id || newOrderId(), t: o.t, device: o.device || deviceId(), total: items.reduce((s, it) => s + it.price * it.qty, 0), items, synced: !!o.synced };
   });
-  if (changed) store.set(KEY_LOG, out);
+  if (changed) store.set(key, out);
   return out;
 }
 
@@ -375,17 +384,17 @@ function logOrder() {
 }
 
 // 把上传结果写回本机记录（重新读一次，避免覆盖上传期间新下的单）
-function markOrders(updates) {
-  const log = readLog();
+function markOrders(updates, key = KEY_LOG) {
+  const log = readLog(key);
   for (const o of log) if (updates.has(o.id)) Object.assign(o, updates.get(o.id));
-  store.set(KEY_LOG, log);
+  store.set(key, log);
 }
 
 let syncing = false;
 let lastSyncError = "";
-async function syncOrders() {
+async function syncOrders(key = KEY_LOG) {
   if (syncing || !navigator.onLine) return;
-  const pending = readLog().filter((o) => !o.synced && !o.rejected);
+  const pending = readLog(key).filter((o) => !o.synced && !o.rejected);
   if (!pending.length) return;
   syncing = true;
   const updates = new Map();
@@ -412,7 +421,7 @@ async function syncOrders() {
   } catch (e) {
     lastSyncError = navigator.onLine ? "服务器暂时连不上，稍后自动重试" : "当前没有网络，联网后自动上传";
   } finally {
-    if (updates.size) markOrders(updates);
+    if (updates.size) markOrders(updates, key);
     syncing = false;
     // 标记已上传和换成服务器扣过的库存要一起做，否则这几单会被扣两次或漏扣
     if (latestStock) setServerStock(latestStock);
@@ -441,6 +450,25 @@ function renderStats() {
     本机编号 <b>${deviceId()}</b> · 已上传 ${synced} 单${pending ? ` · <b>待上传 ${pending} 单</b>` : ""}${rejected ? ` · 被拒收 ${rejected} 单` : ""}
     ${pending && lastSyncError ? `<br><small>${lastSyncError}</small>` : ""}`;
   $("#btn-sync").hidden = !pending;
+  renderOtherEvents();
+}
+
+// 换了场次后，本机上一场还有没传上去的单：提示并提供补传
+function otherPending() {
+  return otherEventLogKeys(localStorage, event.id)
+    .map((key) => ({ key, n: readLog(key).filter((o) => !o.synced && !o.rejected).length }))
+    .filter((x) => x.n);
+}
+
+function renderOtherEvents() {
+  const n = otherPending().reduce((s, x) => s + x.n, 0);
+  $("#admin-other").hidden = !n;
+  $("#admin-other-text").textContent = n ? `上一场还有 ${n} 单没上传` : "";
+}
+
+async function syncOtherEvents() {
+  for (const { key } of otherPending()) await syncOrders(key);
+  renderStats();
 }
 
 function downloadCsv(csv, name) {
@@ -459,7 +487,7 @@ function exportCsv() {
     const time = new Date(o.t).toLocaleString("zh-CN", { hour12: false });
     for (const it of o.items) rows.push([time, it.shop, it.name, it.price, it.qty, it.price * it.qty, o.synced ? "是" : "否"]);
   }
-  downloadCsv("﻿" + rows.map((r) => r.map(esc).join(",")).join("\n"), `A12-杭偶O-本机记录-${new Date().toISOString().slice(0, 10)}.csv`);
+  downloadCsv("﻿" + rows.map((r) => r.map(esc).join(",")).join("\n"), `${event.booth}-${event.name}-本机记录-${new Date().toISOString().slice(0, 10)}.csv`);
 }
 
 // ---------- 服务器汇总（需要管理口令，口令只存在这台设备上） ----------
@@ -496,7 +524,7 @@ async function showServerSummary() {
 async function exportServerCsv() {
   try {
     const csv = await (await adminFetch("orders.csv")).text();
-    downloadCsv(csv, `A12-杭偶O-服务器订单-${new Date().toISOString().slice(0, 10)}.csv`);
+    downloadCsv(csv, `${event.booth}-${event.name}-服务器订单-${new Date().toISOString().slice(0, 10)}.csv`);
   } catch (e) {
     $("#server-stats").innerHTML = `<p class="admin-note error">${e.message}</p>`;
   }
@@ -673,7 +701,8 @@ $("#btn-clear").addEventListener("click", () => {
 });
 $("#cart-toggle").addEventListener("click", () => document.body.classList.toggle("cart-open"));
 $("#btn-export").addEventListener("click", exportCsv);
-$("#btn-sync").addEventListener("click", syncOrders);
+$("#btn-sync").addEventListener("click", () => syncOrders());
+$("#btn-sync-other").addEventListener("click", syncOtherEvents);
 $("#btn-server-summary").addEventListener("click", showServerSummary);
 $("#btn-server-csv").addEventListener("click", exportServerCsv);
 $("#btn-server-archive").addEventListener("click", archiveServer);
@@ -692,6 +721,12 @@ document.addEventListener("keydown", (e) => {
     e.target.blur();
   }
 });
+// 页面标题和横幅上的摊位号、展会名都来自这场的配置
+document.title = `小広甜品铺 · ${event.booth}`;
+$("#banner-booth").textContent = event.booth;
+$("#banner-place").textContent = `${event.city} · ${event.name}`;
+$("#banner img").alt = `小広甜品铺 · ${event.booth} · ${event.city} · ${event.name}`;
+
 bindLongPress($("#banner"), 1500, openAdmin);
 
 // 双指缩放 / 双击放大会打断顾客操作，统一屏蔽
